@@ -1,0 +1,22 @@
+Minutes:
+    Asked about our group's meeting time, and if there was an agreed upon time to meet.
+    - Answered that we have one agreed upon time to meet Mondays, and are thinking about more.
+
+    Asked if our group has a communication platform to discuss project details.
+    - Yes, we are using Discord. All group members are on it.
+
+    Asked about the status of our group's project propsal.
+    - Answered that it is mostly complete, and that a few details are being ironed out.
+
+    Asked to describe our group's project. After description was given, TA recommended that a 
+    communication system could be implemented for users to chat together and request games.
+    - We described that we might implement a way for users to play against opponents with similar
+      total accumulated points.
+
+    Asked about our group's APIs, then recommended when a user plays a chess game if a bad move
+    is played a prompt can appear letting them know why it is bad.
+
+    Asked to look at our wireframe. Said it looked good.
+
+    Asked to look at our Use-Case Diagram. Said it needs to be updated with more seperate 
+    use-cases.
