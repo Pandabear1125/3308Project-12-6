@@ -1,0 +1,19 @@
+<div class="container" style="width:50%">
+
+{{> message}}
+
+<form action="/login" method="POST">
+    <legend><b>Login</b></legend>
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="username" name="username" class="form-control" id="username" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" id="password">
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+    <div style="padding-top:16px" id="submit-help" class="form-text">Don't have an account? <a href="/register">Register</a></div>
+</form>
+
+</div>
