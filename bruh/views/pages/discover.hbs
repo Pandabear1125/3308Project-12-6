@@ -1,0 +1,22 @@
+{{> message}}
+
+<table class="table">
+    <tr>
+        <th>Event Name</th>
+        <th>Event Image</th>
+        <th>Event Time (local)</th>
+        {{!-- button --}}
+        <th></th> 
+    </tr>
+
+    {{#each events}}
+    <tr>
+        <td>{{this.name}}</td>
+        <td><img src="{{this.images.[0].url}}" alt="Image Missing" style="height:50px;"></img></td>
+        <td>{{this.dates.start.localDate}} <br> {{this.dates.start.localTime}}</td>
+        <td>
+            <a href="{{this.url}}" class="btn btn-info" role="button">Book</a>
+        </td>
+    </tr>
+    {{/each}}
+</table> 
