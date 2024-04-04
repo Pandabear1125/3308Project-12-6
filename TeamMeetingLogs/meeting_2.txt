@@ -1,0 +1,16 @@
+Meeting on 04/03/24 at 6:45
+
+Asked about our invididual updates:
+  - Chess Board is visible, but not interactive yet. 
+  - We should make the branches named what they are for. For example, if login is being worked on in the branch, then we should name it login and commit that
+
+What we are planning on doing for the next sprint: 
+  - Make the chess board interactive
+  - Have our website up and visible 
+
+Advice: 
+	- stories should accuretly show who is working on it and what is being doing 
+	- things should be moved to the in progress area when they are being worked on
+  - if they are for the next sprint, put them in ice box 
+	- whatever task you work on, try to commit daily to make sure its working 
+	- make sure before the meeting there are commits for that feature so they can be looked at
