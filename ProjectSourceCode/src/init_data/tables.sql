@@ -16,8 +16,8 @@ CREATE TABLE users (
 CREATE TABLE games (
     game_id SERIAL PRIMARY KEY, 
     date DATE NOT NULL,
-    player_white INT NOT NULL,
-    player_black INT NOT NULL,
+    player_white INT,
+    player_black INT,
     FOREIGN KEY (player_white) REFERENCES users(user_id),
     FOREIGN KEY (player_black) REFERENCES users(user_id)
 );
@@ -32,7 +32,7 @@ CREATE TABLE users_to_games (
 CREATE TABLE moves (
     move_id SERIAL PRIMARY KEY,
     move VARCHAR(20) NOT NULL,
-    move_num INT NOT NULL
+    num INT NOT NULL
 );
 
 CREATE TABLE games_to_moves (
