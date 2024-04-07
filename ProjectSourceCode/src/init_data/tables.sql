@@ -18,6 +18,7 @@ CREATE TABLE games (
     date DATE NOT NULL,
     player_white INT,
     player_black INT,
+
     FOREIGN KEY (player_white) REFERENCES users(user_id),
     FOREIGN KEY (player_black) REFERENCES users(user_id)
 );
@@ -25,19 +26,24 @@ CREATE TABLE games (
 CREATE TABLE users_to_games (
     user_id INT NOT NULL,
     game_id INT NOT NULL,
+
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (game_id) REFERENCES games(game_id)
 );
 
 CREATE TABLE moves (
     move_id SERIAL PRIMARY KEY,
+    game_id INT NOT NULL,
     move VARCHAR(20) NOT NULL,
-    num INT NOT NULL
+    num INT NOT NULL,
+
+    FOREIGN KEY (game_id) REFERENCES games(game_id)
 );
 
 CREATE TABLE games_to_moves (
     game_id INT NOT NULL,
     move_id INT NOT NULL,
+    
     FOREIGN KEY (game_id) REFERENCES games(game_id),
     FOREIGN KEY (move_id) REFERENCES moves(move_id)
 );
