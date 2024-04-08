@@ -88,6 +88,14 @@ app.get("/register", (req, res) => {
 
 app.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(req.body.password, 10);
+    if((req.body.username.length < 20) || (!req.body.username)){
+        if (/[!@#$%^&*()\/<>,.\{\[\}\]\|\\]/.test(req.body.username)){
+            return res.status(400).render("pages/register", { error: true, message: "Bad username, no special characters!" });
+        }
+    }
+    else {
+        return res.status(400).render("pages/register", { error: true, message: "Bad username, under 20 characters please!" });
+    }
     console.log(hash);
     const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
     db.any(insert_query, [req.body.username, hash])
