@@ -78,10 +78,6 @@ app.get('/welcome', (req, res) => {
     res.json({ status: 'success', message: 'Welcome!' });
 });
 
-app.get('/start-game', (req, res) => {
-    res.redirect('/game.hbs');
-})
-
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
