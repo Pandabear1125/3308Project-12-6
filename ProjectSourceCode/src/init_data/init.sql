@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS games_to_moves;
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(200) NOT NULL,
     bio VARCHAR(250) DEFAULT '',
     earned_points INT DEFAULT 0,
     current_points INT DEFAULT 0
