@@ -2,9 +2,6 @@ let playing = false;
 let currentPlayer = 1;
 const panel = document.querySelector('.player');
 const buttons = document.querySelectorAll('.bttn');
-// Sound effects for project.
-const timesUp = new Audio('audio/460133__eschwabe3__robot-affirmative.wav');
-const click = new Audio('audio/561660__mattruthsound.wav');
 
 // Add a leading zero to numbers less than 10.
 
@@ -127,11 +124,3 @@ for (let i = 0; i < buttons.length; i++) {
         }
     });
 }
-
-// Listen for the press of the spacebar on Windows, Linux, and Mac.
-
-document.addEventListener('keypress', event => {
-    if (event.keyCode === 32 || event.which === 32) {
-        swapPlayer();
-    }
-});
