@@ -78,6 +78,75 @@ app.get('/welcome', (req, res) => {
     res.json({ status: 'success', message: 'Welcome!' });
 });
 
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
+app.get("/register", (req, res) => {
+    res.render("pages/register");
+});
+
+app.post('/register', async (req, res) => {
+    const hash = await bcrypt.hash(req.body.password, 10);
+    console.log(hash);
+    const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
+    db.any(insert_query, [req.body.username, hash])
+        .then(function (data) {
+            res.redirect("/login");
+        })
+        .catch(function (err) {
+            console.log(err);
+            res.redirect("/register");
+        })
+});
+
+app.get('/login', (req, res) => {
+    res.render("pages/login");
+});
+
+app.post('/login', async (req, res) => {
+    const find_user = "SELECT * FROM users WHERE username = $1;";
+
+    db.any(find_user, [req.body.username])
+        .then(async function (data) {
+            var user = data[0];
+            console.log(user);
+
+            const match = await bcrypt.compare(req.body.password, user.password);
+
+            if (!match) {
+                res.render("pages/login", { error: true, message: "1Incorrect username or password.", });
+            }
+            else {
+                req.session.user = user;
+                req.session.save();
+
+                res.redirect("/home");
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+            res.render("pages/register", { error: true, message: "User does not exist.", });
+        })
+});
+
+app.get('/home', (req, res) => {
+    res.render('pages/home');
+});
+
+app.get('/playType', (req, res) => {
+    res.render('pages/playType');
+});
+
+app.get('/game', (req, res) => {
+    res.render('pages/game');
+});
+
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.render('pages/logout');
+});
+
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
