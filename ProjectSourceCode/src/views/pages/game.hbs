@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Game</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-wdith, height=device-height, initial-scale=1.0">
+        <link rel="stylesheet" href="css/style.css">
+        <title>Chess Clock</title>
     </head>
     <body>
-        <script src="script.js"></script>
+        <main>
+            <div class="player">
+                <div class="player__tile player-1">
+                    <div class="player__digits">
+                        <span id="min1">10</span>:<span id="sec1">00</span>
+                    </div>
+                </div>
+
+            <div class="timer__buttons">
+                <button class="timer__start-bttn bttn" type="button">START</button>
+                <button class="timer__reset-bttn btnn" type="button">RESET</button>
+            </div>
+        </main>
+        <footer>
+            <p>Click on timer after a move to switch player's clock</p>
+        </footer>
+        <script src="ProjectSourceCode/src/resources/js/timer.js"></script>
     </body>
 </html>
