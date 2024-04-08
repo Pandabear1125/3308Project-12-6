@@ -3,6 +3,7 @@ let currentPlayer = 1;
 const panel = document.querySelector('.player');
 const buttons = document.querySelectorAll('.bttn');
 
+
 // Add a leading zero to numbers less than 10.
 
 const padZero = (number) => {
