@@ -41,6 +41,17 @@ describe('Testing Register API', () => {
           done();
         });
     });
+    it('negative: /register. Checking invalid name', done => {
+        chai
+          .request(server)
+          .post('/register')
+          .send({id: 1, name: '_not@valid', password: 'password'})
+          .end((err, res) => {
+            expect(res).to.have.status(400);
+            expect(res.body.message).to.equals('Invalid input');
+            done();
+        });
+    });
 });
 
 // ********************************************************************************
