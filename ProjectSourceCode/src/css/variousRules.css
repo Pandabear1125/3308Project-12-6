@@ -1,0 +1,10 @@
+.profileBar{
+    padding: 25px 50px;
+    width: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #dfdfdf;
+}
+.rowPad{
+    padding: 25px 5px;
+}

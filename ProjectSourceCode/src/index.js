@@ -147,6 +147,10 @@ app.get('/logout', (req, res) => {
     res.render('pages/logout');
 });
 
+app.get('/profile', (req, res) => {
+    res.render('pages/profile');
+});
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
