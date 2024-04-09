@@ -3,39 +3,43 @@
         
             {{!-- TODO: 
                 1. Get the name of the person from the data base and thow it into the page
-                2. Let the user update their profile picture --}}
+                2. Let the user update their profile picture and bio --}}
             <div class="col-sm-3 sidenav">
                 <div class="container-fluid text-center">
-                    <img src="../../../res/svgs/basic-set/WQ.svg" alt="You should have images enabled to see your profile picture" width="50" height="50"> <!--TODO: set JS index to do the SQL query class="img-circle" -->
+                    <img loading="lazy" alt="You should have images enabled to see your profile picture" src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Royal_crown_of_Sweden.jpg" width="150" height="150" class="img-circle"/> <!--TODO: set JS index to do the SQL query --> 
                     <p>This is a random Bio of filler text that I could have asked ChatGPT to wirte but I didn't ... or did I?</p><!--TODO: set JS index to do the SQL query-->
                </div>
             </div>
             <div class="col-sm-9 sidenav">
                 <!--The Rest should go here of the drop down bars-->
                 <div class="row">
-                    <button type="button" class="btn profileBar" data-toggle="collapse" data-target="#simpleStats">Simple Stats</button>
-                    <div id="simpleStats" class="collapse">
-                        <table>
-                        <tbody>
-                            <tr>
-                            <td>Games Played</td>
-                            <td>0</td>
-                            </tr>
-                            <tr>
-                            <td>Win Loss Ratio</td>
-                            <td>0</td>
-                            </tr>
-                            <tr>
-                            <td>Time When Last Game Was Played</td>
-                            <td>1/1/1970 00:00:00</td>
-                            </tr>
-                        </tbody>
-                        </table>
+                    <button type="button" class="btn profileBar" data-bs-toggle="collapse" data-bs-target="#simpleStats">Simple Stats</button>
+                    <div id="simpleStats" class="collapse in">
+                        <div class="col-sm-3 sidenav"></div>
+                        <div class="col-sm-6"> 
+                            <table>
+                            <tbody>
+                                <tr>
+                                <td>Games Played</td>
+                                <td>0</td>
+                                </tr>
+                                <tr>
+                                <td>Win Loss Ratio</td>
+                                <td>0</td>
+                                </tr>
+                                <tr>
+                                <td>Time When Last Game Was Played</td>
+                                <td>1/1/1970 00:00:00</td>
+                                </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-3 sidenav"></div>
                     </div>
                 </div>
                 <div class="row">
-                    <button type="button" class="btn profileBar" data-toggle="collapse" data-target="#gameHistory">Game History</button>
-                    <div id="gameHistory" class="collapse">
+                    <button type="button" class="btn profileBar" data-bs-toggle="collapse" data-bs-target="#gameHistory">Game History</button>
+                    <div id="gameHistory" class="collapse in">
                         <table>
                         <tbody>
                             <tr>
