@@ -100,7 +100,8 @@ app.post('/register', async (req, res) => {
     const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
     db.any(insert_query, [req.body.username, hash])
         .then(function (data) {
-            res.redirect("/login");
+            console.log("Success");
+            res.status(200).redirect("/login");
         })
         .catch(function (err) {
             console.log(err);
@@ -123,13 +124,13 @@ app.post('/login', async (req, res) => {
             const match = await bcrypt.compare(req.body.password, user.password);
 
             if (!match) {
-                res.render("pages/login", { error: true, message: "1Incorrect username or password.", });
+                return res.status(400).render("pages/login", { error: true, message: "Incorrect username or password"});
             }
             else {
                 req.session.user = user;
                 req.session.save();
-
-                res.redirect("/home");
+                console.log("Success");
+                res.status(200).redirect("/home");
             }
         })
         .catch(function (err) {
