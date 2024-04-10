@@ -97,11 +97,12 @@ app.post('/register', async (req, res) => {
     const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
     db.any(insert_query, [req.body.username, hash])
         .then(function (data) {
+            console.log("Success");
             res.status(200).redirect("/login");
         })
         .catch(function (err) {
             console.log(err);
-            res.redirect("/register");
+            res.status(400).redirect("/register");
         })
 });
 
@@ -154,7 +155,7 @@ app.post('/login', async (req, res) => {
         })
         .catch(function (err) {
             console.log(err);
-            res.render("pages/register", { error: true, message: "User does not exist.", });
+            res.status(400).render("pages/register", { error: true, message: "User does not exist.", });
         })
 });
 
