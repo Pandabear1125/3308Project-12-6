@@ -1,0 +1,21 @@
+Minutes:
+    Asked what changes have been made since the last meetings.
+    - Basic pages were implemented along with their APIs
+    - Database complete
+    - Game type and timer put in, but the timer only shows one time and does
+      not adjust for which game type was selected(Working on fixing)
+    - Chess board is made with pieces, but not implemented into the page.
+      Pieces can move, but have not established valid moves and taking pieces
+
+    Asked about test cases.
+    - Some are made, but others are still being worked on
+    - APIs are being reconfigured to allow for the tests to pass
+
+    Asked about what is being worked on individually in the coming week.
+    - Each group member stated what they will be working on, and was confirmed
+      to be good by the TA
+
+    Advice:
+    - Suggested to add more information to the 'Add user' story, or to change
+      it to reflect what is being worked on specifically
+    - Reminded the group to update release notes
