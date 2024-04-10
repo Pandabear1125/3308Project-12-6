@@ -33,7 +33,7 @@ describe('Testing Register API', () => {
     it('positive: /register', done => {
       chai
         .request(server)
-        .post('/register')
+        .post('/testRegister')
         .send({id: 1, username: 'testuser', password: 'testpassword'})
         .end((err, res) => {
           expect(res).to.have.status(200);
@@ -44,7 +44,7 @@ describe('Testing Register API', () => {
     it('negative: /register. Checking invalid name', done => {
         chai
           .request(server)
-          .post('/register')
+          .post('/testRegister')
           .send({id: 1, name: '_not@valid', password: 'password'})
           .end((err, res) => {
             expect(res).to.have.status(400);
