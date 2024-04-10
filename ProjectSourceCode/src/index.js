@@ -105,6 +105,29 @@ app.post('/register', async (req, res) => {
         })
 });
 
+app.post('/testRegister', async (req, res) => {
+    const hash = await bcrypt.hash(req.body.password, 10);
+        if (!req.body.username || req.body.username.length === 0) {
+            return res.status(400).json({ status: 'error', message: "Invalid input" });
+        }
+        if (req.body.username.length > 20) {
+            return res.status(400).json({ status: 'error', message: "Invalid input" });
+        }
+        if (/[!@#$%^&*()\/<>,.\{\[\}\]\|\\]/.test(req.body.username)) {
+            return res.status(400).json({ status: 'error', message: "Invalid input" });
+        }
+        console.log(hash);
+        const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
+        db.any(insert_query, [req.body.username, hash])
+            .then(function (data) {
+                res.json({ status: 'success', message: 'Success' });
+            })
+            .catch(function (err) {
+                console.log(err);
+                res.redirect("/register");
+            })
+});
+
 app.get('/login', (req, res) => {
     res.render("pages/login");
 });
@@ -120,18 +143,43 @@ app.post('/login', async (req, res) => {
             const match = await bcrypt.compare(req.body.password, user.password);
 
             if (!match) {
-                res.render("pages/login", { error: true, message: "1Incorrect username or password.", });
+                return res.status(400).render("pages/login", { error: true, message: "Incorrect username or password"});
             }
             else {
                 req.session.user = user;
                 req.session.save();
-
-                res.redirect("/home");
+                console.log("Success");
+                res.status(200).redirect("/home");
             }
         })
         .catch(function (err) {
             console.log(err);
             res.render("pages/register", { error: true, message: "User does not exist.", });
+        })
+});
+
+app.post('/testLogin', async (req, res) => {
+    const find_user = "SELECT * FROM users WHERE username = $1;";
+
+    db.any(find_user, [req.body.username])
+        .then(async function (data) {
+            var user = data[0];
+            console.log(user);
+
+            const match = await bcrypt.compare(req.body.password, user.password);
+
+            if (!match) {
+                return res.json({staus: 'error', message: "Incorrect username or password"});
+            }
+            else {
+                req.session.user = user;
+                req.session.save();
+                res.json({status: 'success', message: "Success"});
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+            return res.json({staus: 'error', message: "User does not exist"});
         })
 });
 

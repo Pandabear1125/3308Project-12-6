@@ -8,24 +8,8 @@
     <title>chess clock</title>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            width: 100%;
-            height: 100%;
-            font-size: 10%;
-            font-family: monospace, monospace;
-        }
 
-        main {
-            width: 100%;
-            padding: 0 10px;
-            box-sizing: border-box;
-        }
 
         .player {
             margin: 1em 0 5px 0;
@@ -128,6 +112,8 @@
       <p>click on timer after a move to switch player's clock.</p>
 
     </footer>
+
+    {{> chessBoard}}
 
     <script src="js/script.js"></script>
 
