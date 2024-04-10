@@ -1,4 +1,4 @@
-# T6 Chess Game
+# T6 Deco Chess
 ## Application Name: Deco Chess
 ## Team Members
 Isabella Bates, Cole Downs, Emma Kalikstein
@@ -14,5 +14,7 @@ We want to create a chess-playing website with multiple parts: a daily chess puz
 1. Download docker desktop
 2. Download git repo
 3. Navigate to ProjectSourceCode
-4. Run 'docker-compose up'
+4. Run ' docker-compose up '
 5. Navigate to [localhost 3000](http://localhost:3000/) on browser
+
+# Changelog
