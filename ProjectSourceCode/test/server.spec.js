@@ -37,6 +37,7 @@ describe('Testing Register API', () => {
       .send({ username: 'validusername', password: 'password123' })
       .end((err, res) => {
         expect(res).to.have.status(200);
+        res.should.redirectTo(/^.*127\.0\.0\.1.*\/login$/);
         done();
       });
   });
@@ -47,6 +48,7 @@ describe('Testing Register API', () => {
       .send({ username: 'invalid@username', password: 'password123' })
       .end((err, res) => {
         expect(res).to.have.status(400);
+        res.should.be.html;
         done();
       });
   });
