@@ -148,7 +148,7 @@ app.post('/login', async (req, res) => {
             const match = await bcrypt.compare(req.body.password, user.password);
 
             if (!match) {
-                return res.status(400).render("pages/login", { error: true, message: "Incorrect username or password"});
+                return res.status(400).render("pages/login", { error: true, message: "Incorrect password"});
             }
             else {
                 req.session.user = user;
@@ -174,7 +174,7 @@ app.post('/testLogin', async (req, res) => {
             const match = await bcrypt.compare(req.body.password, user.password);
 
             if (!match) {
-                return res.json({staus: 'error', message: "Incorrect username or password"});
+                return res.status(400).json({staus: 'error', message: "Incorrect password"});
             }
             else {
                 req.session.user = user;
@@ -184,7 +184,7 @@ app.post('/testLogin', async (req, res) => {
         })
         .catch(function (err) {
             console.log(err);
-            return res.json({staus: 'error', message: "User does not exist"});
+            return res.status(400).json({staus: 'error', message: "User does not exist"});
         })
 });
 
