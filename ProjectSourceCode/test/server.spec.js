@@ -62,6 +62,7 @@ describe('Testing Login API', () => {
       .send({ username: 'validusername', password: 'password123'})
       .end((err, res) => {
         expect(res).to.have.status(200);
+        res.should.redirectTo(/^.*127\.0\.0\.1.*\/home$/);
         done();
       });
   });
@@ -72,6 +73,7 @@ describe('Testing Login API', () => {
         .send({ username: 'validusername', password: 'badpass'})
         .end((err, res) => {
           expect(res).to.have.status(400);
+          res.should.be.html;
           done();
       });
   });
