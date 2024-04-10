@@ -52,4 +52,29 @@ describe('Testing Register API', () => {
   });
 });
 
+describe('Testing Login API', () => {
+  it('positive: /login', done => {
+    chai
+      .request(server)
+      .post('/testLogin')
+      .send({id: 1, username: 'testuser', password: 'testpassword'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.message).to.equals('Success');
+        done();
+      });
+  });
+  it('negative: /login Checking invalid password', done => {
+      chai
+        .request(server)
+        .post('/testLogin')
+        .send({id: 1, username: 'testuser', password: 'badpass'})
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.message).to.equals('Incorrect password');
+          done();
+      });
+  });
+});
+
 // ********************************************************************************
