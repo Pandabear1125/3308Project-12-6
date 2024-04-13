@@ -136,6 +136,18 @@ app.post('/login', async (req, res) => {
         })
 });
 
+// Authentication Middleware.
+const auth = (req, res, next) => {
+    if (!req.session.user) {
+      // Default to login page.
+      return res.redirect('/login');
+    }
+    next();
+};
+  
+// Authentication Required
+app.use(auth);
+
 app.get('/home', (req, res) => {
     res.render('pages/home');
 });
