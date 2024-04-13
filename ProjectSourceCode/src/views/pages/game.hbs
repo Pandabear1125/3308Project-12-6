@@ -154,10 +154,23 @@
 
     function resetTimer() {
       clearInterval(timerInterval);
-      min1 = 10;
-      sec1 = 0;
+      
+      let gameType = document.getElementById('game-type').value;
+      if (gameType === 'standard') {
+        min1 = 10;
+        sec1 = 0;
+      }
+      else if (gameType === 'blitz') {
+        min1 = 5;
+        sec1 = 5; 
+      }
+      else if (gameType === 'bullet') {
+        min1 = 3; 
+        sec1 = 0; 
+      }
+
       document.getElementById('min1').innerText = padZero(min1);
-      document.getElementById('sec1').innerText = padZero(sec1);
+      document.getElementById('sec1').innerText = padZero(sec1); 
     }
 
     // Start the timer when the page loads
