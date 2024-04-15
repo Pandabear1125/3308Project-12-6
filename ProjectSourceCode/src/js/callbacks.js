@@ -1,7 +1,7 @@
 //Callbacks .js. This file contains the functions that are called when various js files need to communicate
 
-// FROM means the handler will call it
-// TO means the handler will be called by that function 
+// FROM means the file will call it
+// TO means the file will be called by that function 
 //
 //
 //
