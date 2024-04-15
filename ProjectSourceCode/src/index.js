@@ -119,8 +119,16 @@ app.post('/login', async (req, res) => {
             var user = data[0];
             console.log(user);
 
+            // Check if user exists at all before we check the password
+            // Redirects to register
+            if (!user) {
+                return res.status(400).render("pages/register", { error: true, message: "User does not exist." });
+            }
+
+            // Check if the password is correct
             const match = await bcrypt.compare(req.body.password, user.password);
 
+            // If the password is incorrect, return an error and redirect to the login page
             if (!match) {
                 return res.status(400).render("pages/login", { error: true, message: "Incorrect password"});
             }
