@@ -8,11 +8,15 @@ let timerInterval2;
 let currentPlayer = 1;
 
 function startTimer1() {
-  timerInterval1 = setInterval(updateTimer1, 1000);
+    clearInterval(timerInterval2);
+    timerInterval1 = setInterval(updateTimer1, 1000);
+    currentPlayer = 1; 
 }
 
 function startTimer2() {
+    clearInterval(timerInterval1); 
     timerInterval2 = setInterval(updateTimer2, 1000);
+    currentPlayer = 2; 
 }
 
 function updateTimer1() {
@@ -52,16 +56,14 @@ function padZero(num) {
 }
 
 function switchPlayer() {
-  if(currentPlayer === 1) {
-    clearInterval(timerInterval1);
-    startTimer2();
-    currentPlayer = 2;
-  }
-  else
-  {
-    clearInterval(timerInterval2);
-    startTimer1();
-    currentPLayer = 1; 
-  }
+    if (currentPlayer === 1) {
+        startTimer2();
+        clearInterval(timerInterval1);
+        currentPlayer = 2;
+    } else {
+        startTimer1();
+        clearInterval(timerInterval2);
+        currentPlayer = 1;
+    }
 
 }
