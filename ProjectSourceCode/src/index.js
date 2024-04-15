@@ -82,21 +82,27 @@ app.get('/', (req, res) => {
     res.redirect('/login');
 });
 
-app.get("/register", (req, res) => {
+app.get('/register', (req, res) => {
     res.render("pages/register");
 });
 
 app.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(req.body.password, 10);
+    const username = req.body.username;
+
+    if (!username || username.length > 20 || /[!@#$%^&*()\/<>,.\{\[\}\]\|\\]/.test(username)) {
+        return res.status(400).render("pages/register", { error: true, message: "Invalid input" });
+    }
     console.log(hash);
     const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
     db.any(insert_query, [req.body.username, hash])
         .then(function (data) {
-            res.redirect("/login");
+            console.log("Success");
+            res.status(200).redirect("/login");
         })
         .catch(function (err) {
             console.log(err);
-            res.redirect("/register");
+            res.status(400).redirect("/register");
         })
 });
 
@@ -115,20 +121,32 @@ app.post('/login', async (req, res) => {
             const match = await bcrypt.compare(req.body.password, user.password);
 
             if (!match) {
-                res.render("pages/login", { error: true, message: "1Incorrect username or password.", });
+                return res.status(400).render("pages/login", { error: true, message: "Incorrect password"});
             }
             else {
                 req.session.user = user;
                 req.session.save();
-
-                res.redirect("/home");
+                console.log("Success");
+                res.status(200).redirect("/home");
             }
         })
         .catch(function (err) {
             console.log(err);
-            res.render("pages/register", { error: true, message: "User does not exist.", });
+            res.status(400).render("pages/register", { error: true, message: "User does not exist.", });
         })
 });
+
+// Authentication Middleware.
+const auth = (req, res, next) => {
+    if (!req.session.user) {
+      // Default to login page.
+      return res.redirect('/login');
+    }
+    next();
+};
+  
+// Authentication Required
+app.use(auth);
 
 app.get('/home', (req, res) => {
     res.render('pages/home');

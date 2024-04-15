@@ -29,4 +29,54 @@ describe('Server!', () => {
 
 // *********************** TODO: WRITE 2 UNIT TESTCASES **************************
 
+describe('Testing Register API', () => {
+  it('positive: /register', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({ username: 'validusername', password: 'password123' })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        res.should.redirectTo(/^.*127\.0\.0\.1.*\/login$/);
+        done();
+      });
+  });
+  it('negative: /register. Checking invalid input', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({ username: 'invalid@username', password: 'password123' })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        res.should.be.html;
+        done();
+      });
+  });
+});
+
+describe('Testing Login API', () => {
+  it('positive: /login', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({ username: 'validusername', password: 'password123'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        res.should.redirectTo(/^.*127\.0\.0\.1.*\/home$/);
+        done();
+      });
+  });
+  it('negative: /login Checking invalid password', done => {
+      chai
+        .request(server)
+        .post('/login')
+        .send({ username: 'validusername', password: 'badpass'})
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          res.should.be.html;
+          done();
+      });
+  });
+});
+
 // ********************************************************************************
