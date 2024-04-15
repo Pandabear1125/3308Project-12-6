@@ -3,7 +3,9 @@ let min1 = 10;
 let sec1 = 0;
 let min2 = 10;
 let sec2 = 0;
-let timerInterval;
+let timerInterval1;
+let timerInterval2;
+let currentPlayer = 1;
 
 function startTimer1() {
   timerInterval1 = setInterval(updateTimer1, 1000);
@@ -50,36 +52,16 @@ function padZero(num) {
 }
 
 function switchPlayer() {
-  clearInterval(timerInterval);
-
-  min2 = 10;
-  sec2 = 0;
-
-  document.getElementById('min2').innerText = padZero(min2);
-  document.getElementById('sec2').innerText = padZero(sec2); 
-
-  startTimer2();
-
-
-}
-
-function resetTimer() {
-  clearInterval(timerInterval);
-  
-  let gameType = document.getElementById('game-type').value;
-  if (gameType === 'standard') {
-    min1 = 10;
-    sec1 = 0;
+  if(currentPlayer === 1) {
+    clearInterval(timerInterval1);
+    startTimer2();
+    currentPlayer = 2;
   }
-  else if (gameType === 'blitz') {
-    min1 = 5;
-    sec1 = 5; 
-  }
-  else if (gameType === 'bullet') {
-    min1 = 3; 
-    sec1 = 0; 
+  else
+  {
+    clearInterval(timerInterval2);
+    startTimer1();
+    currentPLayer = 1; 
   }
 
-  document.getElementById('min1').innerText = padZero(min1);
-  document.getElementById('sec1').innerText = padZero(sec1); 
 }
