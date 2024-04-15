@@ -114,17 +114,19 @@ app.post('/register', async (req, res) => {
         })
 });
 
+// Render endpoint for the login page
 app.get('/login', (req, res) => {
     res.render("pages/login");
 });
 
+// Post endpoint for the login page, processes username and password verification
 app.post('/login', async (req, res) => {
     const find_user = "SELECT * FROM users WHERE username = $1;";
 
+    // Try to find the user
     db.any(find_user, [req.body.username])
         .then(async function (data) {
             var user = data[0];
-            console.log(user);
 
             // Check if user exists at all before we check the password
             // Redirects to register
@@ -139,10 +141,10 @@ app.post('/login', async (req, res) => {
             if (!match) {
                 return res.status(400).render("pages/login", { error: true, message: "Incorrect password"});
             }
+            // If the password is correct, set the session user and redirect to the home page
             else {
                 req.session.user = user;
                 req.session.save();
-                console.log("Success");
                 res.status(200).redirect("/home");
             }
         })
@@ -153,6 +155,7 @@ app.post('/login', async (req, res) => {
 });
 
 // Authentication Middleware.
+// This middleware checks if the user is logged in. If not, it redirects to the login page.
 const auth = (req, res, next) => {
     if (!req.session.user) {
       // Default to login page.
@@ -160,14 +163,15 @@ const auth = (req, res, next) => {
     }
     next();
 };
-  
 // Authentication Required
 app.use(auth);
-
+  
+// Render endpoint for the home page
 app.get('/home', (req, res) => {
     res.render('pages/home');
 });
 
+// Render endpoint for the playType page
 app.get('/playType', (req, res) => {
     res.render('pages/playType');
 });
@@ -176,6 +180,8 @@ app.get('/game', (req, res) => {
     res.render('pages/game');
 });
 
+// Render endpoint for the logout page
+// Destroys the session and redirects to the logout page
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.render('pages/logout');
