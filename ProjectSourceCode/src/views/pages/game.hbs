@@ -101,8 +101,8 @@
       </div>
       
       <div class="timer__buttons">
-        <button class="timer__start-bttn bttn" type="button" onclick="switchPlayer()">SWITCH</button>
-        <button class="timer__reset-bttn bttn" type="button" onclick="resetTimer()">RESET</button>
+        <button class="timer__start-bttn bttn" type="button" onclick="startTimer()">START</button>
+        <button class="timer__reset-bttn bttn" type="button" onclick="switchPlayer()">SWITCH</button>
       </div>
 
     </main>
@@ -173,8 +173,6 @@
       document.getElementById('sec1').innerText = padZero(sec1); 
     }
 
-    // Start the timer when the page loads
-    startTimer();
   </script>
 
   </body>
