@@ -5,7 +5,6 @@
 const express = require('express'); // To build an application server or API
 const app = express();
 const handlebars = require('express-handlebars');
-const Handlebars = require('handlebars');
 const path = require('path');
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
@@ -69,6 +68,8 @@ app.use(
         extended: true,
     })
 );
+
+app.use(express.static(__dirname + '/'));
 
 // *****************************************************
 // <!-- Section 4 : API Routes -->
