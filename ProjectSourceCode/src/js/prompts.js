@@ -1,3 +1,4 @@
+// prompt to start game with AI
 function initialChessPrompt({ color, move }) {
     const playerColor = chessColor(color);
     const computerColor = chessColor(color === "w" ? "b" : "w");
@@ -13,30 +14,19 @@ function initialChessPrompt({ color, move }) {
   // Black's response
   Move: e5
   
-  In this game, I will play as '${playerColor}', and you will play as '${computerColor}'. To help you, I will provide a list of possible moves after my first move that you are to select from and respond with. You are only to choose from this list (if there are possible moves provided)
-  
-  e.g. Valid response
-  // My input
-  Move: e6
-  Possible Moves: [e4, e5, d6]
-  
-  // Your response
-  Move: e4
-  
-  e.g. Invalid response
-  // My input
-  Move: e6
-  Possible Moves: [e4, e5, d6]
-  
-  // Your response
-  Move: h8
+  In this game, I will play as '${playerColor}', and you will play as '${computerColor}'. 
   
   As an additional instruction, I also do not require that you provide any commentary on whether any of my moves are valid. Only your moves will be validated.
       
   ${
     move
       ? `So, for my first move...
-  Move: ${move}`
+    Move: ${move}`
       : `What is your first move as ${computerColor}? The response should be in the format explained previously`
   }`;
-  }
+}
+
+// prompt fo next move
+const nextMovePrompt = ({ move }) => {
+    return `Move: ${move}`;
+};
