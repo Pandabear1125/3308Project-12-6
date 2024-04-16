@@ -167,7 +167,22 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/profile', (req, res) => {
-    res.render('pages/profile');
+    const find_user = "SELECT * FROM users WHERE username = $1;";
+    db.any(find_user, [req.session.user])//Do I really need this here to check if the user is in the database a second time?
+        .then(async function (data) {
+            var user = data[0];
+            if(req.session.user.bio == ''){
+                res.render('pages/profile', {name:req.session.user.username, bio:"It appears that you do not have a bio"});
+            }
+            else{
+                res.render('pages/profile', {name:req.session.user.username, bio: req.session.user.bio});
+            }
+        })
+        .catch(function (err) {
+            console.log(err, req.session.user);//TODO: Get rid of this before final submit because it could hold sensitive data
+            res.render('pages/home');
+        })
+    
 });
 
 // *****************************************************

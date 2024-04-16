@@ -4,7 +4,13 @@
     display: flex;
     flex-wrap: wrap;
     background-color: #dfdfdf;
+    text-align: center;
 }
 .rowPad{
     padding: 25px 5px;
+}
+.tableRules{
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }

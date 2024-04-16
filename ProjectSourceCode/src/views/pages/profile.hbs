@@ -7,14 +7,15 @@
             <div class="col-sm-3 sidenav">
                 <div class="container-fluid text-center">
                     <img loading="lazy" alt="You should have images enabled to see your profile picture" src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Royal_crown_of_Sweden.jpg" width="150" height="150" class="img-circle"/> <!--TODO: set JS index to do the SQL query --> 
-                    <p>This is a random Bio of filler text that I could have asked ChatGPT to wirte but I didn't ... or did I?</p><!--TODO: set JS index to do the SQL query-->
+                    <h2>{{name}}</h2>
+                    <p>{{bio}}</p>
                </div>
             </div>
             <div class="col-sm-9 sidenav">
                 <!--The Rest should go here of the drop down bars-->
                 <div class="row">
                     <button type="button" class="btn profileBar" data-bs-toggle="collapse" data-bs-target="#simpleStats">Simple Stats</button>
-                    <div id="simpleStats" class="collapse in">
+                    <div id="simpleStats" class="collapse in tableRules">
                         <div class="col-sm-3 sidenav"></div>
                         <div class="col-sm-6"> 
                             <table>
@@ -39,7 +40,7 @@
                 </div>
                 <div class="row">
                     <button type="button" class="btn profileBar" data-bs-toggle="collapse" data-bs-target="#gameHistory">Game History</button>
-                    <div id="gameHistory" class="collapse in">
+                    <div id="gameHistory" class="collapse in tableRules">
                         <table>
                         <tbody>
                             <tr>
