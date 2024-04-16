@@ -51,7 +51,7 @@
             }
         </style>
         <body>
-            <form action="/game" method="GET">
+            <form action="/game?game-type={{gameType}}" method="GET">
                 <label for="game-type">Choose game type:</label>
                 <select id="game-type" name="game-type" onchange="updateTimerBasedOnGameType(this.value)">
                     <option value="standard">Standard Chess</option>

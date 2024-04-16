@@ -69,25 +69,21 @@ function switchPlayer() {
 }
 
 function updateTimerBasedOnGameType(gameType) {
-    if (gameType === 'standard') {
-        min1 = 10;
-        sec1 = 0;
-        min2 = 10;
-        sec2 = 0;
-    } else if (gameType === 'blitz') {
-        min1 = 5;
-        sec1 = 0;
-        min2 = 5;
-        sec2 = 0;
-    } else if (gameType === 'bullet') {
-        min1 = 3;
-        sec1 = 0;
-        min2 = 3;
-        sec2 = 0;
-    }
-
-    document.getElementById('min1').innerText = padZero(min1);
-    document.getElementById('sec1').innerText = padZero(sec1);
-    document.getElementById('min2').innerText = padZero(min2);
-    document.getElementById('sec2').innerText = padZero(sec2);
+    var minutes;
+        switch (gameType) {
+            case 'standard':
+                minutes = 10;
+                break;
+            case 'blitz':
+                minutes = 5;
+                break;
+            case 'bullet':
+                minutes = 3;
+                break;
+            default:
+                minutes = 10; // Default to standard if game type is not recognized
+        }
+        // Set the initial timer values
+        document.getElementById('min1').textContent = minutes;
+        document.getElementById('min2').textContent = minutes;
 }
