@@ -1,0 +1,12 @@
+April 16th
+
+What was done:
+ * Database allows for more user stats
+ * Can register and login
+ * The profile page has been updated, still being worked on
+ * Home page done and stylized 
+ * Playable game
+   * You can now pick what type of chess game you want to play
+   * Working timer
+   * Able to see board and pieces, along with moving them
+ * Multiple bug fixes and formatting of the project
