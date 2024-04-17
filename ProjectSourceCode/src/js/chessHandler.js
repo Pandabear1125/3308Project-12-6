@@ -1,5 +1,5 @@
 const OpenAI = require('openai');
-const openai = new OpenAI('<api key here>');
+const openai = `${process.env.API_KEY}`;
 
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
@@ -123,7 +123,7 @@ function startGame() {
 
     getPieceImages();
     reRenderBoard();
-    WhiteTakes();
+    updateWhiteTakes();
     updateBlackTakes();
     updateTotalVictories();
 }
