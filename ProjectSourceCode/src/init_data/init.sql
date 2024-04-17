@@ -14,7 +14,9 @@ CREATE TABLE users (
     password VARCHAR(200) NOT NULL,
     bio VARCHAR(250) DEFAULT '',
     earned_points INT DEFAULT 0,
-    current_points INT DEFAULT 0
+    current_points INT DEFAULT 0,
+    games_won INT DEFAULT 0,
+    games_lost INT DEFAULT 0
 );
 
 CREATE TABLE games (
@@ -22,6 +24,7 @@ CREATE TABLE games (
     date VARCHAR(50) NOT NULL,
     player_white INT,
     player_black INT,
+    white_won BOOLEAN DEFAULT FALSE,
 
     FOREIGN KEY (player_white) REFERENCES users(user_id),
     FOREIGN KEY (player_black) REFERENCES users(user_id)

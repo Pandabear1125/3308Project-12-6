@@ -1,7 +1,7 @@
 # T6 Deco Chess
 ## Application Name: Deco Chess
 ## Team Members
-Isabella Bates, Cole Downs, Emma Kalikstein
+Isabella Bates, Cole Downs, Emma Kalikstein, 
 Jackson Stepka, Paul Tracy, Mathias Labuszewski
 
 ## Project Description
