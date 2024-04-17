@@ -1,0 +1,24 @@
+Minutes:
+    Asked what updates have been made since last meeting.
+    - Most of the pages implemented or updated, Home page finished
+    - Timer functional for the game
+    - Chess board and pieces visibile, game playable
+    - Database updates
+    - Edgecases for register and login applied
+    
+    Asked how well we were doing.
+    - No questions needed answered and no complaints
+
+    Asked about individual updates that will be done in the next week.
+    - Paul: Working with the database to get a user's respective data 
+            and statistics to display correctly on the Profile page.
+    - Jackson: Working on more endpoints in the database, and helping with
+               any integration of the database for other functionalities.
+    - Mathias: Working on callbacks within the chess game to make it more
+               seamless when playing and tie-in with other functionalities.
+    - Emma: Working on the chess timer so that it will change the max time
+            allowed for a game depending on the game type selected.
+    - Isabella: Working on the 'ai' integration for the game, one specific
+                task is implementing player vs. 'ai'.
+    - Cole: Working on stylizing the HTML elements of the other pages to
+            match the theme of the website.
