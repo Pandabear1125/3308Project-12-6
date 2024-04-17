@@ -97,7 +97,7 @@ function startGame() {
     blackCasualities = [0, 0, 0, 0, 0];
 
     reRenderBoard();
-    updateWhiteTakes();
+    WhiteTakes();
     updateBlackTakes();
     updateTotalVictories();
 }
@@ -483,6 +483,10 @@ function makeComputerMove() {
             console.error('Error making computer move:', error);
         });
 }
+// update chessboard state
+// redraw chessboard 
+// update turn indicator
+// update piece images (captured, etc)
 
 class Board {
     constructor() {
