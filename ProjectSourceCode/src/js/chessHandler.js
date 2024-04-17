@@ -1,3 +1,6 @@
+const OpenAI = require('openai');
+const openai = new OpenAI('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');
+
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
 const TILE_SIZE = 50; //in pixels
@@ -447,6 +450,38 @@ function getOppositeTeam(team) {
     if (team === WHITE) return BLACK;
     else if (team === BLACK) return WHITE;
     else return EMPTY;
+}
+
+// player vs computer
+async function getComputerMove(chessboardState) {
+    try {
+        const response = await openai.Completions.create({
+            model: 'gpt-3.5-turbo', // choose the appropriate model
+            prompt: `Given the current chessboard state: ${chessboardState}, what's the best move for Black?`,
+            max_tokens: 1
+        });
+
+        const computerMove = response.data.choices[0].text.trim();
+        return computerMove;
+    } catch (error) {
+        console.error('Error fetching computer move:', error);
+        return null;
+    }
+}
+
+function makeComputerMove() {
+    // get the current state of the chessboard
+    const chessboardState = getCurrentChessboardState();
+
+    // get the computer's move
+    getComputerMove(chessboardState)
+        .then(computerMove => {
+            // apply the computer's move to the chessboard
+            applyMoveToChessboard(computerMove);
+        })
+        .catch(error => {
+            console.error('Error making computer move:', error);
+        });
 }
 
 class Board {
