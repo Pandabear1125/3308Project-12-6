@@ -1,6 +1,7 @@
 const OpenAI = require('openai');
 const openai = `${process.env.API_KEY}`;
 
+
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
 const TILE_SIZE = 50; //in pixels
