@@ -1,5 +1,5 @@
 const OpenAI = require('openai');
-const openai = new OpenAI('');
+const openai = new OpenAI('<api key here>');
 
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
