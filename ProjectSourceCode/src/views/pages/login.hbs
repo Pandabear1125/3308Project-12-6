@@ -1,18 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #404040;
+        }
+        legend {
+            color: white;
+            font-size: 38px;
+        }
+        form { 
+            margin-top: 10%;
+            padding: 5%;
+            border: 10px ridge white;
+            background-color: #303030;
+            color: white;
+        }
+        button {
+            background-color: #CD7F32;
+            padding: 6px 14px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
 <div class="container" style="width:50%">
 
 {{> message}}
 
-<form action="/login" method="POST">
-    <legend><b>Login</b></legend>
-    <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="username" name="username" class="form-control" id="username" aria-describedby="emailHelp">
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" name="password" class="form-control" id="password">
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-    <div style="padding-top:16px" id="submit-help" class="form-text">Don't have an account? <a href="/register">Register</a></div>
-</form>
+    <form action="/login" method="POST">
+        <legend><b>Login</b></legend>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="username" name="username" class="form-control" id="username" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" id="password">
+        </div>
+        <button type="submit">Login</button>
+        <div style="padding-top:16px; color: white" id="submit-help" class="form-text">Don't have an account? <a href="/register">Register</a></div>
+    </form>
 </div>
+</body>
+</html>
