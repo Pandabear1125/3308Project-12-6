@@ -18,3 +18,9 @@
 th, td {  
      padding: 15px; 
 }
+
+.change-form-div{
+    position: relative;
+    display: none;
+}
+

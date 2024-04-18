@@ -188,16 +188,17 @@ app.get('/logout', (req, res) => {
 });
 
 app.get('/profile', (req, res) => {
-    const find_user = "SELECT * FROM users WHERE username = $1;";
-    db.any(find_user, [req.session.user])//Do I really need this here to check if the user is in the database a second time?
+    const find_user = "SELECT * FROM users WHERE user_id = $1;";
+    db.any(find_user, [req.session.user.user_id ])//Do I really need this here to check if the user is in the database a second time?
         .then(async function (data) {
             var user = data[0];
             if(req.session.user.bio == ''){
-                res.render('pages/profile', {name:req.session.user.username, bio:"It appears that you do not have a bio"});
+                var newBio = "It appears that you do not have a bio"
             }
             else{
-                res.render('pages/profile', {name:req.session.user.username, bio: req.session.user.bio});
+                var newBio = req.session.user.bio
             }
+            res.render('pages/profile', {name:req.session.user.username, bio: newBio, pic: req.session.user.picurl});
         })
         .catch(function (err) {
             console.log(err, req.session.user);//TODO: Get rid of this before final submit because it could hold sensitive data
@@ -205,6 +206,46 @@ app.get('/profile', (req, res) => {
         })
     
 });
+
+app.post('/profile', async (req, res) => {
+    var userId = req.session.user.user_id;
+    const update_query = `UPDATE users SET picurl = $1, bio = $2  WHERE user_id = '${userId}';`;
+
+    db.any(update_query, [req.body.userPicture, req.body.userBio])
+        .then(function () {
+            req.session.user.picurl = req.body.userPicture,
+            req.session.user.bio = req.body.userBio;
+            res.status(200).render('pages/profile', {name:req.session.user.username, bio: req.session.user.bio, pic: req.session.user.picurl});
+        })
+        .catch(function (err) {
+            console.log(err);
+            res.status(400).redirect("/home");
+        })
+});
+
+// // Post endpoint for the register page, processes username and password storage
+// app.post('/register', async (req, res) => {
+//     // hash the password
+//     const hash = await bcrypt.hash(req.body.password, 10);
+//     const username = req.body.username;
+
+//     // Check if the username is valid (not too long, no special characters)
+//     if (!username || username.length > 20 || /[!@#$%^&*()\/<>,.\{\[\}\]\|\\]/.test(username)) {
+//         return res.status(400).render("pages/register", { error: true, message: "Invalid input" });
+//     }
+    
+//     const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
+    
+//     // Insert the user into the database
+//     db.any(insert_query, [req.body.username, hash])
+//         .then(function (data) {
+//             res.status(200).redirect("/login");
+//         })
+//         .catch(function (err) {
+//             console.log(err);
+//             res.status(400).redirect("/register");
+//         })
+// });
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
