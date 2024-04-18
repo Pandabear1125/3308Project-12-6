@@ -18,18 +18,18 @@
     "rating": 3
   },
   */
-function ChessHandlerFROM_PeiceMoved(movesArray, indexOfMove){
+function ChessHandlerFROM_PieceMoved(movesArray, indexOfMove){
 
 }
 
 //Peice color can be of White - "WHITE" , Black - "BLACK"
 //Peice position is the position of the peice on the board - in "E2" format
 //Peice type can be of Pawn - "PAWN", Rook - "ROOK", Knight - "KNIGHT", Bishop - "BISHOP", Queen - "QUEEN", King - "KING"
-function ChessHandlerTO_MovePeice(peiceColor, peicePosition, peiceType){
+function ChessHandlerTO_MovePiece(peiceColor, peicePosition, peiceType){
 
 }
 
-//Game type can be of Palayer vs Player - "PVP" , Player vs AI - "PVAI" , AI vs AI - "AIVAI"
+//Game type can be of Player vs Player - "PVP" , Player vs AI - "PVAI" , AI vs AI - "AIVAI"
 //Player difficulty can be of Easy - "EASY", Medium - "MEDIUM", Hard - "HARD"
 function ChessHandlerFROM_GameStarted(gameType, playerDifficulty){
 

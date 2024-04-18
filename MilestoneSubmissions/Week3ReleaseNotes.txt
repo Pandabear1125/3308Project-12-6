@@ -1,0 +1,45 @@
+April 16th
+
+## What's Changed
+* Mathias Peices by @MathiasLabuszewski in https://github.com/Pandabear1125/T6/pull/23
+* layouts, pages, and partials by @cDownz in https://github.com/Pandabear1125/T6/pull/24
+* Emma by @Emka2886 in https://github.com/Pandabear1125/T6/pull/25
+* Changed the files to be under SRC by @MathiasLabuszewski in https://github.com/Pandabear1125/T6/pull/26
+* Paul's changes by @patr1100 in https://github.com/Pandabear1125/T6/pull/27
+* update main.hbs by @isabellabates in https://github.com/Pandabear1125/T6/pull/31
+* update login page by @isabellabates in https://github.com/Pandabear1125/T6/pull/32
+* add logout and register page by @isabellabates in https://github.com/Pandabear1125/T6/pull/33
+* partials written in by @cDownz in https://github.com/Pandabear1125/T6/pull/34
+* Updated partials by @cDownz in https://github.com/Pandabear1125/T6/pull/35
+* fixed stuff and APIs? by @cDownz in https://github.com/Pandabear1125/T6/pull/36
+* Database Implementation by @Pandabear1125 in https://github.com/Pandabear1125/T6/pull/37
+* Changed password to support up to 200 chars in database by @Pandabear1125 in https://github.com/Pandabear1125/T6/pull/40
+* Added error messages for register by @cDownz in https://github.com/Pandabear1125/T6/pull/41
+* Added success/fail messages for login by @cDownz in https://github.com/Pandabear1125/T6/pull/42
+* Basic Home Page by @cDownz in https://github.com/Pandabear1125/T6/pull/43
+* Isabella - adding chai register tests by @isabellabates in https://github.com/Pandabear1125/T6/pull/44
+* Updated APIs and tests by @cDownz in https://github.com/Pandabear1125/T6/pull/46
+* tests for /register passing by @isabellabates in https://github.com/Pandabear1125/T6/pull/47
+* Adding automated tests by @cDownz in https://github.com/Pandabear1125/T6/pull/48
+* updated tests by @isabellabates in https://github.com/Pandabear1125/T6/pull/49
+* Adding automated tests by @cDownz in https://github.com/Pandabear1125/T6/pull/50
+* Adding automated tests(done) by @cDownz in https://github.com/Pandabear1125/T6/pull/51
+* Authentication middleware for APIs by @cDownz in https://github.com/Pandabear1125/T6/pull/53
+* Chessmove by @MathiasLabuszewski in https://github.com/Pandabear1125/T6/pull/54
+* fixed main layout by @cDownz in https://github.com/Pandabear1125/T6/pull/55
+* Chessmove by @MathiasLabuszewski in https://github.com/Pandabear1125/T6/pull/57
+* Fixed an edge case with post.login endpoint by @Pandabear1125 in https://github.com/Pandabear1125/T6/pull/58
+* Added more player statistics to user table by @Pandabear1125 in https://github.com/Pandabear1125/T6/pull/59
+* Doccumentation by @Pandabear1125 in https://github.com/Pandabear1125/T6/pull/60
+* Home page and navbar updated by @cDownz in https://github.com/Pandabear1125/T6/pull/65
+* adding prompts for chess ai to main by @isabellabates in https://github.com/Pandabear1125/T6/pull/66
+
+## New Contributors
+* @MathiasLabuszewski made their first contribution in https://github.com/Pandabear1125/T6/pull/23
+* @cDownz made their first contribution in https://github.com/Pandabear1125/T6/pull/24
+* @Emka2886 made their first contribution in https://github.com/Pandabear1125/T6/pull/25
+* @patr1100 made their first contribution in https://github.com/Pandabear1125/T6/pull/27
+* @isabellabates made their first contribution in https://github.com/Pandabear1125/T6/pull/31
+* @Pandabear1125 made their first contribution in https://github.com/Pandabear1125/T6/pull/37
+
+**Full Changelog**: https://github.com/Pandabear1125/T6/compare/v1.0-Week-1...v3.0-Week-3

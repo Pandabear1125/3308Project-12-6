@@ -67,3 +67,23 @@ function switchPlayer() {
     }
 
 }
+
+function updateTimerBasedOnGameType(gameType) {
+    var minutes;
+        switch (gameType) {
+            case 'standard':
+                minutes = 10;
+                break;
+            case 'blitz':
+                minutes = 5;
+                break;
+            case 'bullet':
+                minutes = 3;
+                break;
+            default:
+                minutes = 10; // Default to standard if game type is not recognized
+        }
+        // Set the initial timer values
+        document.getElementById('min1').textContent = minutes;
+        document.getElementById('min2').textContent = minutes;
+}

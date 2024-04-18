@@ -1,1 +1,5 @@
 ProjectSourceCode/node_modules
+ProjectSourceCode/docker-compose.yml
+ProjectSourceCode/.env
+ProjectSourceCode/.gitignore
+

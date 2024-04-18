@@ -1,18 +1,74 @@
-<div class="container" style="width:50%">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #404040;
+        }
+        legend {
+            color: white;
+            font-size: 38px;
+        }
+        form { 
+            margin-top: 10%;
+            padding: 5%;
+            border: 10px ridge white;
+            background-color: #303030;
+            color: white;
+        }
+        button {
+            background-color: #CD7F32;
+            padding: 6px 14px;
+            border-radius: 8px;
+        }
+        .w3rcheckerboard {
+            width: 100%;
+            height: 100%;
+            background-color: #ce9c5e;
+            background-image: linear-gradient(
+                45deg,
+                #000 25%,
+                transparent 25%,
+                transparent 75%,
+                #000 75%,
+                #000
+                ),
+                linear-gradient(
+                -45deg,
+                #000 25%,
+                transparent 25%,
+                transparent 75%,
+                #000 75%,
+                #000
+                );
+            background-size: 104.3px 104.3px;
+            background-repeat: repeat;
+        }
+    </style>
+</head>
+<body>
+<div class="w3rcheckerboard">
+    <div class="container" style="width:75%">
 
-{{> message}}
-    
-<form action="/register" method="POST">
-    <legend><b>Register</b></legend>
-    <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="username" name="username" class="form-control" id="username" aria-describedby="emailHelp">
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" name="password" class="form-control" id="password">
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-    <div style="padding-top:16px" id="submit-help" class="form-text">Already have an account? <a href="/login">Login</a></div>
-</form>
-</div> 
+        {{> message}}
+        
+        <form action="/register" method="POST">
+            <legend><b>Register</b></legend>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="username" name="username" class="form-control" id="username" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" id="password">
+            </div>
+            <button type="submit">Register</button>
+            <div style="padding-top:16px; color: white" id="submit-help" class="form-text">Already have an account? <a href="/login">Login</a></div>
+        </form>
+    </div> 
+</div>
+</body>
+</html>
