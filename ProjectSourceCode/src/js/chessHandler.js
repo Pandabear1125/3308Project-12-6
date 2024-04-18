@@ -119,7 +119,7 @@ function startGame() {
     updateTotalVictories();
 }
 
-function onClick(event) {
+async function onClick(event) { // changed to async function
     let chessCanvasX = chessCanvas.getBoundingClientRect().left;
     let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
@@ -143,17 +143,52 @@ function onClick(event) {
                 updateWhiteTakes();
             }
         }
-
         moveSelectedPiece(x, y);
-
         changeCurrentTeam();
+
+        // if the game mode is "Player vs Computer" and its computers turn
+        // if (gameMode === "Player vs Computer" && currentTeam === BLACK) {
+        //     await handleComputerMove(); // call function to handle the computer's move
+        // }
     } else {
         curX = x;
         curY = y;
     }
-
     reRenderBoard();
 }
+
+// // function to handle the computer's move
+// // need player's move as input
+// async function handleComputerMove(playerMove) {
+//     // call prompt function to get ChatGPT's response
+//     const response = await prompt(playerMove);
+
+//     // update the chessboard with ChatGPT's move
+//     updateChessboard(response);
+// }
+// /*
+// call like this:
+// const playerMove = "bishop, c4, f7";
+// handlePlayerMove(playerMove);
+// */
+
+// // function to update the chessboard based on ChatGPT's response
+// function updateChessboard(response) {
+//     // parse the response and extract the move suggested by ChatGPT
+//     const chatGPTMove = parseChatGPTResponse(response);
+
+//     // update the chessboard with ChatGPT's move
+//     const [piece, startPos, endPos] = chatGPTMove.split(',');
+//     const startX = startPos.charCodeAt(0) - 97; // convert the letter to X coordinate
+//     const startY = parseInt(startPos[1]) - 1; // convert the number to Y coordinate
+//     const endX = endPos.charCodeAt(0) - 97; // convert the letter to X coordinate
+//     const endY = parseInt(endPos[1]) - 1; // convert the number to Y coordinate
+
+//     // update the board with ChatGPT's move
+//     moveSelectedPiece(endX, endY, startX, startY);
+//     reRenderBoard();
+// }
+
 
 function checkPossiblePlays() {
     if (curX < 0 || curY < 0) return;
