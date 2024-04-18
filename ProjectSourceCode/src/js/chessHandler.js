@@ -1,6 +1,4 @@
-const OpenAI = require('openai');
-const openai = `${process.env.API_KEY}`;
-
+const { prompt } = require('./chessAI'); // import functions for "Player vs Computer" mode
 
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
@@ -59,9 +57,6 @@ let blackVictories;
 document.addEventListener("DOMContentLoaded", onLoad);
 
 function onLoad() {
-
-
-
     chessCanvas = document.getElementById("chessCanvas");
     chess2dContext = chessCanvas.getContext("2d");
     chessCanvas.addEventListener("click", onClick);
@@ -83,9 +78,7 @@ function onLoad() {
 function loadChessPieceImages(){
   
     const pieceNames = ['pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
-  
 
-  
     // Load black chess piece images
     for (const piece of pieceNames) {
       const img = new Image();
@@ -108,14 +101,11 @@ function getPieceImages() {
     loadChessPieceImages();
 }
 
-
-
 function startGame() {
     board = new Board();
     curX = -1;
     curY = -1;
 
-    
     currentTeam = WHITE;
     currentTeamText.textContent = "White's turn";
 
@@ -478,42 +468,6 @@ function getOppositeTeam(team) {
     else if (team === BLACK) return WHITE;
     else return EMPTY;
 }
-
-// player vs computer
-async function getComputerMove(chessboardState) {
-    try {
-        const response = await openai.Completions.create({
-            model: 'gpt-3.5-turbo', // choose the appropriate model
-            prompt: `Given the current chessboard state: ${chessboardState}, what's the best move for Black?`,
-            max_tokens: 1
-        });
-
-        const computerMove = response.data.choices[0].text.trim();
-        return computerMove;
-    } catch (error) {
-        console.error('Error fetching computer move:', error);
-        return null;
-    }
-}
-
-function makeComputerMove() {
-    // get the current state of the chessboard
-    const chessboardState = getCurrentChessboardState();
-
-    // get the computer's move
-    getComputerMove(chessboardState)
-        .then(computerMove => {
-            // apply the computer's move to the chessboard
-            applyMoveToChessboard(computerMove);
-        })
-        .catch(error => {
-            console.error('Error making computer move:', error);
-        });
-}
-// update chessboard state
-// redraw chessboard 
-// update turn indicator
-// update piece images (captured, etc)
 
 class Board {
     constructor() {
