@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width">
     <title>Document</title>
     <style>
         body {
@@ -24,26 +24,50 @@
             padding: 6px 14px;
             border-radius: 8px;
         }
+        .w3rcheckerboard {
+            width: 100%;
+            height: 100%;
+            background-color: #ce9c5e;
+            background-image: linear-gradient(
+                45deg,
+                #000 25%,
+                transparent 25%,
+                transparent 75%,
+                #000 75%,
+                #000
+                ),
+                linear-gradient(
+                -45deg,
+                #000 25%,
+                transparent 25%,
+                transparent 75%,
+                #000 75%,
+                #000
+                );
+            background-size: 104.3px 104.3px;
+            background-repeat: repeat;
+        }
     </style>
 </head>
 <body>
-<div class="container" style="width:50%">
+<div class="w3rcheckerboard">
+    <div class="container" style="width:75%">
+        {{> message}}
 
-{{> message}}
-
-    <form action="/login" method="POST">
-        <legend><b>Login</b></legend>
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="username" name="username" class="form-control" id="username" aria-describedby="emailHelp">
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" id="password">
-        </div>
-        <button type="submit">Login</button>
-        <div style="padding-top:16px; color: white" id="submit-help" class="form-text">Don't have an account? <a href="/register">Register</a></div>
-    </form>
+        <form action="/login" method="POST">
+            <legend><b>Login</b></legend>
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="username" name="username" class="form-control" id="username" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" id="password">
+            </div>
+            <button type="submit">Login</button>
+            <div style="padding-top:16px; color: white" id="submit-help" class="form-text">Don't have an account? <a href="/register">Register</a></div>
+        </form>
+    </div>
 </div>
 </body>
 </html>
