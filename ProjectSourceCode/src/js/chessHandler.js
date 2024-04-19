@@ -190,12 +190,10 @@ function onClick(event) {
 }
 
 function parseMove(moveString) {
-    // Check if the move string has valid format (e.g., "e2e4")
     if (!/^([a-h][1-8]){2}$/.test(moveString)) {
         throw new Error('Invalid move string');
     }
 
-    // Extract the source and destination squares
     const source = moveString.slice(0, 2);
     const destination = moveString.slice(2, 4);
 
@@ -206,7 +204,7 @@ function parseMove(moveString) {
 async function handleComputerMove() {
     try {
         console.log('called handleComputerMove');
-        // fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -";
+        // example: fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -"; 
         console.log("fen:", fen);
 
         const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`, {
@@ -219,13 +217,13 @@ async function handleComputerMove() {
 
         const aiMove = data.move;
     
-        console.log('AI Move:', aiMove); // should be d7d5
+        console.log('AI Move:', aiMove); // example: should be d7d5
 
         const [source, destination] = parseMove(aiMove);
 
-        // Update the board state to reflect the AI's move
-        const sourceX = source.charCodeAt(0) - 97; // Convert file from letter to index (e.g., 'e' -> 4)
-        const sourceY = 8 - parseInt(source[1]); // Convert rank from number to index (e.g., '2' -> 6)
+        // update the board state to reflect the AI's move
+        const sourceX = source.charCodeAt(0) - 97; // convert file from letter to index (e.g., 'e' -> 4)
+        const sourceY = 8 - parseInt(source[1]); // convert rank from number to index (e.g., '2' -> 6)
         const x = destination.charCodeAt(0) - 97;
         const y = 8 - parseInt(destination[1]);
 
