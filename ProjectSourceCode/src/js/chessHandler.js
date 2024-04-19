@@ -30,9 +30,6 @@ let blackPieceImages = [];
 let whitePieceImages = [];
 
 //Route to get chess pieces or make them ourselfs. 
-
-
-
 let chessCanvas;
 let chess2dContext;
 let currentTeamText;
@@ -56,9 +53,6 @@ let blackVictories;
 document.addEventListener("DOMContentLoaded", onLoad);
 
 function onLoad() {
-
-
-
     chessCanvas = document.getElementById("chessCanvas");
     chess2dContext = chessCanvas.getContext("2d");
     chessCanvas.addEventListener("click", onClick);
@@ -72,7 +66,6 @@ function onLoad() {
     totalVictoriesText = document.getElementById("totalVictories");
     whiteVictories = 0;
     blackVictories = 0;
-
 
     startGame();
 }
@@ -99,18 +92,14 @@ function loadChessPieceImages(){
       }
 };
 
-
 function getPieceImages() {
     loadChessPieceImages();
 }
-
-
 
 function startGame() {
     board = new Board();
     curX = -1;
     curY = -1;
-
     
     currentTeam = WHITE;
     currentTeamText.textContent = "White's turn";
@@ -134,8 +123,8 @@ function onLeave(){
     if (GAME_STARTED){
         reRenderBoard();
     }
-
 }
+
 function onClick(event) {
     let chessCanvasX = chessCanvas.getBoundingClientRect().left;
     let chessCanvasY = chessCanvas.getBoundingClientRect().top;
@@ -160,10 +149,7 @@ function onClick(event) {
                 updateWhiteTakes();
             }
         }
-
         moveSelectedPiece(x, y);
-
-        
 
         changeCurrentTeam();
 
@@ -171,7 +157,6 @@ function onClick(event) {
         curX = x;
         curY = y;
     }
-
     reRenderBoard();
 }
 
@@ -367,16 +352,6 @@ function generateFEN(board) {
             fenString += emptyCount;
             emptyCount = 0;
           }
-  
-//const WHITE = 0;
-// const BLACK = 1;
-// const EMPTY = -1;
-// const PAWN = 0;
-// const KNIGHT = 1;
-// const BISHOP = 2;
-// const ROOK = 3;
-// const QUEEN = 4;
-// const KING = 5;
 
           let pieceChar = tile.pieceType;
           if (pieceChar === PAWN){
@@ -428,33 +403,7 @@ function generateFEN(board) {
     // Add active color component
     fenString += ' ' + activeColor;
   
-    // // Add castling availability component
-    // if (board.whiteCastlingKingside || board.whiteCastlingQueenside || board.blackCastlingKingside || board.blackCastlingQueenside) {
-    //   castlingAvailability = '';
-    //   if (board.whiteCastlingKingside) castlingAvailability += 'K';
-    //   if (board.whiteCastlingQueenside) castlingAvailability += 'Q';
-    //   if (board.blackCastlingKingside) castlingAvailability += 'k';
-    //   if (board.blackCastlingQueenside) castlingAvailability += 'q';
-    // }
-    // fenString += ' ' + castlingAvailability;
-  
-    // // Add en passant square component
-    // if (board.enPassantSquare) {
-    //   enPassantSquare = board.enPassantSquare;
-    // }
     fenString += ' - -';
-  
-    // // Add halfmove clock component
-    // if (board.halfmoveClock) {
-    //   halfmoveClock = board.halfmoveClock;
-    // }
-    // fenString += ' ' + halfmoveClock;
-  
-    // // Add fullmove clock component
-    // if (board.fullmoveClock) {
-    //   fullmoveClock = board.fullmoveClock;
-    // }
-    // fenString += ' ' + fullmoveClock;
   
     return fenString;
   }
@@ -548,15 +497,6 @@ function drawPieces() {
     for (let i = 0; i < BOARD_HEIGHT; i++) {
         for (let j = 0; j < BOARD_WIDTH; j++) {
             if (board.tiles[i][j].team === EMPTY) continue;
-
-            // if (board.tiles[i][j].team === WHITE) {
-            //     chess2dContext.fillStyle = "#FFffff";
-            // } else {
-            //     chess2dContext.fillStyle = "#000000";
-            // } 
-            // chess2dContext.font = "38px Arial";
-            // let pieceType = board.tiles[i][j].pieceType;
-            // chess2dContext.fillText(piecesCharacters[pieceType], TILE_SIZE*(j+1/8), TILE_SIZE*(i+4/5));
 
             let pieceType = board.tiles[i][j].pieceType;
 
