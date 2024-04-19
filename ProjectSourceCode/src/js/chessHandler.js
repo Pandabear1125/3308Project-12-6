@@ -348,7 +348,7 @@ function checkValidCapture(x, y) {
 
 function generateFEN(board) {
     let fenString = '';
-    let activeColor = 'w'; // Assume White is the active color by default
+    let activeColor = ''; // Assume White is the active color by default
 
   
     // Loop through rows
@@ -412,11 +412,15 @@ function generateFEN(board) {
         fenString += '/';
       }
     }
-  
-    if (currentTeam === 'WHITE') {
-        activeColor = 'w';
+    console.log(currentTeam);
+
+    if (currentTeam === WHITE) {
+        console.log('White is the active color');
+        activeColor = 'b';
       } else {
-        activeColor = 'b'; 
+        console.log('black is the active color');
+
+        activeColor = 'w'; 
       }
 
     // Add active color component
@@ -436,7 +440,7 @@ function generateFEN(board) {
     // if (board.enPassantSquare) {
     //   enPassantSquare = board.enPassantSquare;
     // }
-    // fenString += ' ' + enPassantSquare;
+    fenString += ' - -';
   
     // // Add halfmove clock component
     // if (board.halfmoveClock) {
