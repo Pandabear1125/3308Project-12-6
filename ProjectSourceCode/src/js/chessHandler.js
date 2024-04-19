@@ -1,4 +1,5 @@
 
+
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
 const TILE_SIZE = 50; //in pixels
@@ -43,6 +44,7 @@ let totalVictoriesText;
 
 let board;
 let currentTeam;
+let GAME_STARTED = false;
 
 let curX;
 let curY;
@@ -56,9 +58,13 @@ let blackVictories;
 document.addEventListener("DOMContentLoaded", onLoad);
 
 function onLoad() {
+
+
+
     chessCanvas = document.getElementById("chessCanvas");
     chess2dContext = chessCanvas.getContext("2d");
     chessCanvas.addEventListener("click", onClick);
+    chessCanvas.addEventListener("mouseleave", onLeave);
 
     currentTeamText = document.getElementById("currentTeamText");
 
@@ -77,7 +83,7 @@ function onLoad() {
 function loadChessPieceImages(){
   
     const pieceNames = ['pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
-
+  
     // Load black chess piece images
     for (const piece of pieceNames) {
       const img = new Image();
@@ -100,11 +106,14 @@ function getPieceImages() {
     loadChessPieceImages();
 }
 
+
+
 function startGame() {
     board = new Board();
     curX = -1;
     curY = -1;
 
+    
     currentTeam = WHITE;
     currentTeamText.textContent = "White's turn";
 
@@ -116,9 +125,20 @@ function startGame() {
     updateWhiteTakes();
     updateBlackTakes();
     updateTotalVictories();
+
+    GAME_STARTED = true;
 }
 
-async function onClick(event) { // changed to async function
+function onLeave(){
+    curX = -1;
+    curY = -1;
+    
+    if (GAME_STARTED){
+        reRenderBoard();
+    }
+
+}
+function onClick(event) {
     let chessCanvasX = chessCanvas.getBoundingClientRect().left;
     let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
@@ -142,52 +162,17 @@ async function onClick(event) { // changed to async function
                 updateWhiteTakes();
             }
         }
-        moveSelectedPiece(x, y);
-        changeCurrentTeam();
 
-        // if the game mode is "Player vs Computer" and its computers turn
-        // if (gameMode === "Player vs Computer" && currentTeam === BLACK) {
-        //     await handleComputerMove(); // call function to handle the computer's move
-        // }
+        moveSelectedPiece(x, y);
+
+        changeCurrentTeam();
     } else {
         curX = x;
         curY = y;
     }
+
     reRenderBoard();
 }
-
-// // function to handle the computer's move
-// // need player's move as input
-// async function handleComputerMove(playerMove) {
-//     // call prompt function to get ChatGPT's response
-//     const response = await prompt(playerMove);
-
-//     // update the chessboard with ChatGPT's move
-//     updateChessboard(response);
-// }
-// /*
-// call like this:
-// const playerMove = "bishop, c4, f7";
-// handlePlayerMove(playerMove);
-// */
-
-// // function to update the chessboard based on ChatGPT's response
-// function updateChessboard(response) {
-//     // parse the response and extract the move suggested by ChatGPT
-//     const chatGPTMove = parseChatGPTResponse(response);
-
-//     // update the chessboard with ChatGPT's move
-//     const [piece, startPos, endPos] = chatGPTMove.split(',');
-//     const startX = startPos.charCodeAt(0) - 97; // convert the letter to X coordinate
-//     const startY = parseInt(startPos[1]) - 1; // convert the number to Y coordinate
-//     const endX = endPos.charCodeAt(0) - 97; // convert the letter to X coordinate
-//     const endY = parseInt(endPos[1]) - 1; // convert the number to Y coordinate
-
-//     // update the board with ChatGPT's move
-//     moveSelectedPiece(endX, endY, startX, startY);
-//     reRenderBoard();
-// }
-
 
 function checkPossiblePlays() {
     if (curX < 0 || curY < 0) return;
@@ -502,6 +487,42 @@ function getOppositeTeam(team) {
     else if (team === BLACK) return WHITE;
     else return EMPTY;
 }
+
+// player vs computer
+async function getComputerMove(chessboardState) {
+    try {
+        const response = await openai.Completions.create({
+            model: 'gpt-3.5-turbo', // choose the appropriate model
+            prompt: `Given the current chessboard state: ${chessboardState}, what's the best move for Black?`,
+            max_tokens: 1
+        });
+
+        const computerMove = response.data.choices[0].text.trim();
+        return computerMove;
+    } catch (error) {
+        console.error('Error fetching computer move:', error);
+        return null;
+    }
+}
+
+function makeComputerMove() {
+    // get the current state of the chessboard
+    const chessboardState = getCurrentChessboardState();
+
+    // get the computer's move
+    getComputerMove(chessboardState)
+        .then(computerMove => {
+            // apply the computer's move to the chessboard
+            applyMoveToChessboard(computerMove);
+        })
+        .catch(error => {
+            console.error('Error making computer move:', error);
+        });
+}
+// update chessboard state
+// redraw chessboard 
+// update turn indicator
+// update piece images (captured, etc)
 
 class Board {
     constructor() {
