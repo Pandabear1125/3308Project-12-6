@@ -10,11 +10,11 @@ async function prompt(playerMove) {
         prompt_text += `\n\n${invalidString}\n\nThe previous move attempt was invalid due to no piece being present at the specified start square or the move was not legal. The valid moves are [${validMoves}]. Please suggest a new move:`;
 
     const data = {
-        model: "text-davinci-003",
+        model: "text-davinci-002",
         prompt: prompt,
         temperature: 1,
         max_tokens: 64,
-        top_p: 1,
+        top_p: 1,   
         frequency_penalty: 0.6,
         presence_penalty: 0.6,
     };
