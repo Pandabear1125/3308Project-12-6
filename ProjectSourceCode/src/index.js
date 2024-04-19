@@ -3,6 +3,7 @@
 // *****************************************************
 
 const express = require('express'); // To build an application server or API
+const fetch = require('node-fetch');
 const app = express();
 const handlebars = require('express-handlebars');
 const path = require('path');
@@ -11,7 +12,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part C.
-const { prompt } = require('./js/chessAI');
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -75,6 +75,34 @@ app.use(express.static(__dirname + '/'));
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
+
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.body.fen;
+        
+        const data = await postChessApi({ fen });
+        
+        res.json(data);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
+
+async function postChessApi(data = {}) {
+    try {
+        const response = await fetch("https://chess-api.com/v1", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    } catch (error) {
+        throw new Error("error");
+    }
+}
+
 
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
@@ -187,6 +215,8 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.render('pages/logout');
 });
+
+
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
