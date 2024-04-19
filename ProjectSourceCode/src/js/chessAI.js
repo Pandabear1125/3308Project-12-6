@@ -1,5 +1,5 @@
 const OpenAI = require('openai');
-const OPENAI_API_KEY = `${process.env.API_KEY}`;
+// const OPENAI_API_KEY = `${process.env.API_KEY}`;
 
 const axios = require('axios');
 
