@@ -81,8 +81,10 @@ app.get('/aiResponse', async (req, res) => {
         const fen = req.body.fen;
         
         const data = await postChessApi({ fen });
+
+        const move = data.move;
         
-        res.json(data);
+        res.json({ move });
     } catch (error) {
         console.error("Error:", error);
     }
