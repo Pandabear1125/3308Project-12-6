@@ -55,20 +55,22 @@ let blackCasualities;
 let whiteVictories;
 let blackVictories;
 
-let playType = COMPUTER; // by default
-
 let fen = "";
+let playType = PLAYER;
 
 document.addEventListener("DOMContentLoaded", onLoad);
 
-function updatePlayType(playType) {
-    switch (playType) {
-        case 'player':
-            return PLAYER;
-        case 'computer':
-            return COMPUTER;
+function updatePlayType(selectedPlayType) {
+    switch (selectedPlayType) {
+        case "player":
+            playType = PLAYER;
+            break;
+        case "computer":
+            playType = COMPUTER;
+            break;
         default:
-            return PLAYER; // default to "PvP" if player type is not recognized
+            playType = PLAYER; // default to "PvP" if player type is not recognized
+            break;
     }
 }
 
@@ -174,18 +176,19 @@ function onClick(event) {
                 }
             }
             fen = moveSelectedPiece(x, y);
-
             changeCurrentTeam();
+            reRenderBoard();
+
+            if (playType === COMPUTER && currentTeam === BLACK) {
+                console.log(playType)
+                handleComputerMove();
+            }
 
         } else {
             curX = x;
             curY = y;
+            reRenderBoard();
         }
-        reRenderBoard();
-    }
-    else if (playType === COMPUTER && currentTeam === BLACK) {
-        console.log(playType)
-        handleComputerMove();
     }
 }
 
@@ -231,9 +234,7 @@ async function handleComputerMove() {
         console.log('source y:', sourceY);
         console.log('x:', x);
         console.log('y:', y);
-        
-        if (checkValidMovement(x, y)) {
-            if (checkValidCapture(x, y)) {
+
                 if (board.tiles[y][x].pieceType === KING) {
                     if (currentTeam === WHITE) {
                         whiteVictories++;
@@ -250,11 +251,9 @@ async function handleComputerMove() {
                     whiteCasualities[board.tiles[y][x].pieceType]++;
                     updateWhiteTakes();
                 }
-            }
             fen = moveAIPiece(sourceX, sourceY, x, y);
             
             changeCurrentTeam();
-        }
         
         reRenderBoard();
     } catch (error) {
@@ -533,6 +532,9 @@ async function moveAIPiece(sourceX, sourceY, x, y) {
 
     const fenPosition = generateFEN(board,x,y);
     console.log(fenPosition); // Output: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+
+    drawBoard();
+    drawPieces();
 
     curX = -1;
     curY = -1;
