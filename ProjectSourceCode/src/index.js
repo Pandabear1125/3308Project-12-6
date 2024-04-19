@@ -11,7 +11,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part C.
-const { prompt } = require('./js/chessAI');
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -76,45 +75,14 @@ app.use(express.static(__dirname + '/'));
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
-// The default route, used for testing
-app.get('/welcome', (req, res) => {
-    res.json({ status: 'success', message: 'Welcome!' });
+
+//* AI routes:
+app.get('/aiResponse', (req, res) => {
+
+ 
 });
-
-// The default route, redirects to login
-app.get('/', (req, res) => {
-    res.redirect('/login');
-});
-
-// Render endpoint for the register page
-app.get('/register', (req, res) => {
-    res.render("pages/register");
-});
-
-// Post endpoint for the register page, processes username and password storage
-app.post('/register', async (req, res) => {
-    // hash the password
-    const hash = await bcrypt.hash(req.body.password, 10);
-    const username = req.body.username;
-
-    // Check if the username is valid (not too long, no special characters)
-    if (!username || username.length > 20 || /[!@#$%^&*()\/<>,.\{\[\}\]\|\\]/.test(username)) {
-        return res.status(400).render("pages/register", { error: true, message: "Invalid input" });
-    }
-    
-    const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
-    
-    // Insert the user into the database
-    db.any(insert_query, [req.body.username, hash])
-        .then(function (data) {
-            res.status(200).redirect("/login");
-        })
-        .catch(function (err) {
-            console.log(err);
-            res.status(400).redirect("/register");
-        })
-});
-
+   
+   
 // Render endpoint for the login page
 app.get('/login', (req, res) => {
     res.render("pages/login");
