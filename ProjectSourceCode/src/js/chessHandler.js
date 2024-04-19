@@ -1,4 +1,3 @@
-const { prompt } = require('./chessAI'); // import functions for "Player vs Computer" mode
 
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;

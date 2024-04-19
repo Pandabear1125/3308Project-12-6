@@ -76,13 +76,51 @@ app.use(express.static(__dirname + '/'));
 // *****************************************************
 
 
-//* AI routes:
-app.get('/aiResponse', (req, res) => {
 
- 
+// //* AI routes:
+// app.get('/aiResponse', (req, res) => {
+// });
+
+
+// The default route, used for testing
+app.get('/welcome', (req, res) => {
+    res.json({ status: 'success', message: 'Welcome!' });
 });
-   
-   
+
+// The default route, redirects to login
+app.get('/', (req, res) => {
+    res.redirect('/login');
+});
+
+// Render endpoint for the register page
+app.get('/register', (req, res) => {
+    res.render("pages/register");
+});
+
+// Post endpoint for the register page, processes username and password storage
+app.post('/register', async (req, res) => {
+    // hash the password
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const username = req.body.username;
+
+    // Check if the username is valid (not too long, no special characters)
+    if (!username || username.length > 20 || /[!@#$%^&*()\/<>,.\{\[\}\]\|\\]/.test(username)) {
+        return res.status(400).render("pages/register", { error: true, message: "Invalid input" });
+    }
+    
+    const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
+    
+    // Insert the user into the database
+    db.any(insert_query, [req.body.username, hash])
+        .then(function (data) {
+            res.status(200).redirect("/login");
+        })
+        .catch(function (err) {
+            console.log(err);
+            res.status(400).redirect("/register");
+        })
+});
+
 // Render endpoint for the login page
 app.get('/login', (req, res) => {
     res.render("pages/login");
