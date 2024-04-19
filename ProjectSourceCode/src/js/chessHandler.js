@@ -227,6 +227,8 @@ async function handleComputerMove() {
         const x = destination.charCodeAt(0) - 97;
         const y = 8 - parseInt(destination[1]);
 
+        console.log('source x:', sourceX);
+        console.log('source y:', sourceY);
         console.log('x:', x);
         console.log('y:', y);
         
@@ -249,7 +251,7 @@ async function handleComputerMove() {
                     updateWhiteTakes();
                 }
             }
-            moveSelectedPiece(x, y);
+            fen = moveAIPiece(sourceX, sourceY, x, y);
             
             changeCurrentTeam();
         }
@@ -513,6 +515,21 @@ function moveSelectedPiece(x, y) {
     board.tiles[y][x].team = board.tiles[curY][curX].team;
     board.tiles[curY][curX].pieceType = EMPTY;
     board.tiles[curY][curX].team = EMPTY;
+
+    const fenPosition = generateFEN(board,x,y);
+    console.log(fenPosition); // Output: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+
+    curX = -1;
+    curY = -1;
+    board.resetValidMoves();
+    return fenPosition;
+}
+
+async function moveAIPiece(sourceX, sourceY, x, y) {
+    board.tiles[y][x].pieceType = board.tiles[sourceY][sourceX].pieceType;
+    board.tiles[y][x].team = board.tiles[sourceY][sourceX].team;
+    board.tiles[sourceY][sourceX].pieceType = EMPTY;
+    board.tiles[sourceY][sourceX].team = EMPTY;
 
     const fenPosition = generateFEN(board,x,y);
     console.log(fenPosition); // Output: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
