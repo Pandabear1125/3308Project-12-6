@@ -56,23 +56,17 @@ let whiteVictories;
 let blackVictories;
 
 let fen = "";
-let playType = PLAYER;
 
 document.addEventListener("DOMContentLoaded", onLoad);
 
-function updatePlayType(selectedPlayType) {
-    switch (selectedPlayType) {
-        case "player":
-            playType = PLAYER;
-            break;
-        case "computer":
-            playType = COMPUTER;
-            break;
-        default:
-            playType = PLAYER; // default to "PvP" if player type is not recognized
-            break;
-    }
+function getURLPlayType(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
+let playType = getURLPlayType('play-type');
+console.log(playType);
 
 function onLoad() {
     chessCanvas = document.getElementById("chessCanvas");
@@ -147,7 +141,8 @@ function onLeave(){
 }
 
 function onClick(event) {
-    if (playType === PLAYER || (playType === COMPUTER && currentTeam === WHITE) ){
+    console.log(playType);
+    if (playType === "player" || (playType === "computer" && currentTeam === WHITE) ){
         console.log(playType)
         let chessCanvasX = chessCanvas.getBoundingClientRect().left;
         let chessCanvasY = chessCanvas.getBoundingClientRect().top;
@@ -179,7 +174,7 @@ function onClick(event) {
             changeCurrentTeam();
             reRenderBoard();
 
-            if (playType === COMPUTER && currentTeam === BLACK) {
+            if (playType === "computer" && currentTeam === BLACK) {
                 console.log(playType)
                 handleComputerMove();
             }
