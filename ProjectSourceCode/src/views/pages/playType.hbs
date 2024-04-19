@@ -51,7 +51,7 @@
             }
         </style>
         <body>
-            <form action="/game?game-type={{gameType}}" method="GET">
+            <form action="/game?game-type={{gameType}}&play-type={{playType}}" method="GET">
                 <label for="game-type">Choose game type:</label>
                 <select id="game-type" name="game-type" onchange="updateTimerBasedOnGameType(this.value)">
                     <option value="standard">Standard Chess</option>
@@ -59,15 +59,16 @@
                     <option value="bullet">Bullet chess</option>
                 </select>
                 <label for="play-type">Choose player type:</label>
-                <select id="play-type" name="play-type">
+                <select id="play-type" name="play-type" onchange="updatePlayType(this.value)">
                     <option value="player">Player vs. Player</option>
-                    <option value="ai">Player vs. Computer</option>
+                    <option value="computer">Player vs. Computer</option>
                 </select>
                 <br><br>
                 <input type="submit" value="Start Game">
             </form>
 
             <script src="../../js/timer.js"></script>
+            <script src="../../js/chessHandler.js"></script>
         </body>
     </head>
 </html>

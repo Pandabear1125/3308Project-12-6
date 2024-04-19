@@ -1,3 +1,5 @@
+// const fetch = require('node-fetch');
+
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
 const TILE_SIZE = 50; //in pixels
@@ -12,6 +14,9 @@ let HIGHLIGHT_DOT_RADIUS = 5;
 
 const WHITE = 0;
 const BLACK = 1;
+
+const PLAYER = 0;
+const COMPUTER = 1;
 
 const EMPTY = -1;
 
@@ -50,7 +55,22 @@ let blackCasualities;
 let whiteVictories;
 let blackVictories;
 
+let playType = COMPUTER; // by default
+
+let fen = "";
+
 document.addEventListener("DOMContentLoaded", onLoad);
+
+function updatePlayType(playType) {
+    switch (playType) {
+        case 'player':
+            return PLAYER;
+        case 'computer':
+            return COMPUTER;
+        default:
+            return PLAYER; // default to "PvP" if player type is not recognized
+    }
+}
 
 function onLoad() {
     chessCanvas = document.getElementById("chessCanvas");
@@ -69,7 +89,6 @@ function onLoad() {
 
     startGame();
 }
-
 
 function loadChessPieceImages(){
   
@@ -126,38 +145,121 @@ function onLeave(){
 }
 
 function onClick(event) {
-    let chessCanvasX = chessCanvas.getBoundingClientRect().left;
-    let chessCanvasY = chessCanvas.getBoundingClientRect().top;
+    if (playType === PLAYER || (playType === COMPUTER && currentTeam === WHITE) ){
+        console.log(playType)
+        let chessCanvasX = chessCanvas.getBoundingClientRect().left;
+        let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
-    let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
-    let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
+        let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
+        let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
-    if (checkValidMovement(x, y) === true) {
-        if (checkValidCapture(x, y) === true) {
-            if (board.tiles[y][x].pieceType === KING) {
-                if (currentTeam === WHITE) whiteVictories++;
-                else blackVictories++;
+        console.log('x:', x);
+        console.log('y:', y);
 
-                startGame();
+        if (checkValidMovement(x, y) === true) {
+            if (checkValidCapture(x, y) === true) {
+                if (board.tiles[y][x].pieceType === KING) {
+                    if (currentTeam === WHITE) whiteVictories++;
+                    else blackVictories++;
+
+                    startGame();
+                }
+
+                if (currentTeam === WHITE) {
+                    blackCasualities[board.tiles[y][x].pieceType]++;
+                    updateBlackTakes();
+                } else {
+                    whiteCasualities[board.tiles[y][x].pieceType]++;
+                    updateWhiteTakes();
+                }
             }
+            fen = moveSelectedPiece(x, y);
 
-            if (currentTeam === WHITE) {
-                blackCasualities[board.tiles[y][x].pieceType]++;
-                updateBlackTakes();
-            } else {
-                whiteCasualities[board.tiles[y][x].pieceType]++;
-                updateWhiteTakes();
-            }
+            changeCurrentTeam();
+
+        } else {
+            curX = x;
+            curY = y;
         }
-        moveSelectedPiece(x, y);
-
-        changeCurrentTeam();
-
-    } else {
-        curX = x;
-        curY = y;
+        reRenderBoard();
     }
-    reRenderBoard();
+    else if (playType === COMPUTER && currentTeam === BLACK) {
+        console.log(playType)
+        handleComputerMove();
+    }
+}
+
+function parseMove(moveString) {
+    // Check if the move string has valid format (e.g., "e2e4")
+    if (!/^([a-h][1-8]){2}$/.test(moveString)) {
+        throw new Error('Invalid move string');
+    }
+
+    // Extract the source and destination squares
+    const source = moveString.slice(0, 2);
+    const destination = moveString.slice(2, 4);
+
+    return [source, destination];
+}
+
+
+async function handleComputerMove() {
+    try {
+        console.log('called handleComputerMove');
+        // fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -";
+        console.log("fen:", fen);
+
+        const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+
+        const aiMove = data.move;
+    
+        console.log('AI Move:', aiMove); // should be d7d5
+
+        const [source, destination] = parseMove(aiMove);
+
+        // Update the board state to reflect the AI's move
+        const sourceX = source.charCodeAt(0) - 97; // Convert file from letter to index (e.g., 'e' -> 4)
+        const sourceY = 8 - parseInt(source[1]); // Convert rank from number to index (e.g., '2' -> 6)
+        const x = destination.charCodeAt(0) - 97;
+        const y = 8 - parseInt(destination[1]);
+
+        console.log('x:', x);
+        console.log('y:', y);
+        
+        if (checkValidMovement(x, y)) {
+            if (checkValidCapture(x, y)) {
+                if (board.tiles[y][x].pieceType === KING) {
+                    if (currentTeam === WHITE) {
+                        whiteVictories++;
+                    } else {
+                        blackVictories++;
+                    }
+                    startGame();
+                }
+                
+                if (currentTeam === WHITE) {
+                    blackCasualities[board.tiles[y][x].pieceType]++;
+                    updateBlackTakes();
+                } else {
+                    whiteCasualities[board.tiles[y][x].pieceType]++;
+                    updateWhiteTakes();
+                }
+            }
+            moveSelectedPiece(x, y);
+            
+            changeCurrentTeam();
+        }
+        
+        reRenderBoard();
+    } catch (error) {
+        console.error("Error:", error);
+    }
 }
 
 function checkPossiblePlays() {
@@ -409,8 +511,6 @@ function generateFEN(board) {
   }
 
 function moveSelectedPiece(x, y) {
-
-    
     board.tiles[y][x].pieceType = board.tiles[curY][curX].pieceType;
     board.tiles[y][x].team = board.tiles[curY][curX].team;
     board.tiles[curY][curX].pieceType = EMPTY;
@@ -422,6 +522,7 @@ function moveSelectedPiece(x, y) {
     curX = -1;
     curY = -1;
     board.resetValidMoves();
+    return fenPosition;
 }
 
 function changeCurrentTeam() {
