@@ -1,6 +1,3 @@
-const OpenAI = require('openai');
-const openai = `${process.env.API_KEY}`;
-
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
 const TILE_SIZE = 50; //in pixels
@@ -45,6 +42,7 @@ let totalVictoriesText;
 
 let board;
 let currentTeam;
+let GAME_STARTED = false;
 
 let curX;
 let curY;
@@ -64,6 +62,7 @@ function onLoad() {
     chessCanvas = document.getElementById("chessCanvas");
     chess2dContext = chessCanvas.getContext("2d");
     chessCanvas.addEventListener("click", onClick);
+    chessCanvas.addEventListener("mouseleave", onLeave);
 
     currentTeamText = document.getElementById("currentTeamText");
 
@@ -82,8 +81,6 @@ function onLoad() {
 function loadChessPieceImages(){
   
     const pieceNames = ['pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
-  
-
   
     // Load black chess piece images
     for (const piece of pieceNames) {
@@ -126,8 +123,19 @@ function startGame() {
     updateWhiteTakes();
     updateBlackTakes();
     updateTotalVictories();
+
+    GAME_STARTED = true;
 }
 
+function onLeave(){
+    curX = -1;
+    curY = -1;
+    
+    if (GAME_STARTED){
+        reRenderBoard();
+    }
+
+}
 function onClick(event) {
     let chessCanvasX = chessCanvas.getBoundingClientRect().left;
     let chessCanvasY = chessCanvas.getBoundingClientRect().top;
@@ -156,6 +164,7 @@ function onClick(event) {
         moveSelectedPiece(x, y);
 
         changeCurrentTeam();
+
     } else {
         curX = x;
         curY = y;
@@ -337,12 +346,127 @@ function checkValidCapture(x, y) {
     else return false;
 }
 
+function generateFEN(board) {
+    let fenString = '';
+    let activeColor = ''; // Assume White is the active color by default
+
+  
+    // Loop through rows
+    for (let y = 0; y < 8; y++) {
+      let emptyCount = 0;
+  
+      // Loop through columns
+      for (let x = 0; x < 8; x++) {
+        const tile = board.tiles[y][x];
+  
+        if (tile.pieceType != EMPTY) {
+
+          if (emptyCount > 0) {
+            fenString += emptyCount;
+            emptyCount = 0;
+          }
+  
+//const WHITE = 0;
+// const BLACK = 1;
+// const EMPTY = -1;
+// const PAWN = 0;
+// const KNIGHT = 1;
+// const BISHOP = 2;
+// const ROOK = 3;
+// const QUEEN = 4;
+// const KING = 5;
+
+          let pieceChar = tile.pieceType;
+          if (pieceChar === PAWN){
+            pieceChar = 'p';
+          } else if (pieceChar === KNIGHT){
+            pieceChar = 'n';
+            } else if (pieceChar === BISHOP){
+            pieceChar = 'b';
+            } else if (pieceChar === ROOK){
+            pieceChar = 'r';
+            } else if (pieceChar === QUEEN){
+            pieceChar = 'q';
+            } else if (pieceChar === KING){
+            pieceChar = 'k';
+            }
+          
+            if (tile.team === WHITE) {
+              pieceChar = pieceChar.toUpperCase();
+            }
+
+          fenString += pieceChar;
+
+        } else {
+
+          emptyCount++;
+
+        }
+      }
+  
+      if (emptyCount > 0) {
+        fenString += emptyCount;
+      }
+  
+      if (y < 7) {
+        fenString += '/';
+      }
+    }
+    console.log(currentTeam);
+
+    if (currentTeam === WHITE) {
+        console.log('White is the active color');
+        activeColor = 'b';
+      } else {
+        console.log('black is the active color');
+
+        activeColor = 'w'; 
+      }
+
+    // Add active color component
+    fenString += ' ' + activeColor;
+  
+    // // Add castling availability component
+    // if (board.whiteCastlingKingside || board.whiteCastlingQueenside || board.blackCastlingKingside || board.blackCastlingQueenside) {
+    //   castlingAvailability = '';
+    //   if (board.whiteCastlingKingside) castlingAvailability += 'K';
+    //   if (board.whiteCastlingQueenside) castlingAvailability += 'Q';
+    //   if (board.blackCastlingKingside) castlingAvailability += 'k';
+    //   if (board.blackCastlingQueenside) castlingAvailability += 'q';
+    // }
+    // fenString += ' ' + castlingAvailability;
+  
+    // // Add en passant square component
+    // if (board.enPassantSquare) {
+    //   enPassantSquare = board.enPassantSquare;
+    // }
+    fenString += ' - -';
+  
+    // // Add halfmove clock component
+    // if (board.halfmoveClock) {
+    //   halfmoveClock = board.halfmoveClock;
+    // }
+    // fenString += ' ' + halfmoveClock;
+  
+    // // Add fullmove clock component
+    // if (board.fullmoveClock) {
+    //   fullmoveClock = board.fullmoveClock;
+    // }
+    // fenString += ' ' + fullmoveClock;
+  
+    return fenString;
+  }
+
 function moveSelectedPiece(x, y) {
+
+    
     board.tiles[y][x].pieceType = board.tiles[curY][curX].pieceType;
     board.tiles[y][x].team = board.tiles[curY][curX].team;
-
     board.tiles[curY][curX].pieceType = EMPTY;
     board.tiles[curY][curX].team = EMPTY;
+
+    const fenPosition = generateFEN(board,x,y);
+    console.log(fenPosition); // Output: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
     curX = -1;
     curY = -1;
@@ -478,41 +602,6 @@ function getOppositeTeam(team) {
     else return EMPTY;
 }
 
-// player vs computer
-async function getComputerMove(chessboardState) {
-    try {
-        const response = await openai.Completions.create({
-            model: 'gpt-3.5-turbo', // choose the appropriate model
-            prompt: `Given the current chessboard state: ${chessboardState}, what's the best move for Black?`,
-            max_tokens: 1
-        });
-
-        const computerMove = response.data.choices[0].text.trim();
-        return computerMove;
-    } catch (error) {
-        console.error('Error fetching computer move:', error);
-        return null;
-    }
-}
-
-function makeComputerMove() {
-    // get the current state of the chessboard
-    const chessboardState = getCurrentChessboardState();
-
-    // get the computer's move
-    getComputerMove(chessboardState)
-        .then(computerMove => {
-            // apply the computer's move to the chessboard
-            applyMoveToChessboard(computerMove);
-        })
-        .catch(error => {
-            console.error('Error making computer move:', error);
-        });
-}
-// update chessboard state
-// redraw chessboard 
-// update turn indicator
-// update piece images (captured, etc)
 
 class Board {
     constructor() {

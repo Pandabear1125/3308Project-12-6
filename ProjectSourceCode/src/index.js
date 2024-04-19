@@ -3,6 +3,7 @@
 // *****************************************************
 
 const express = require('express'); // To build an application server or API
+const fetch = require('node-fetch');
 const app = express();
 const handlebars = require('express-handlebars');
 const path = require('path');
@@ -74,6 +75,34 @@ app.use(express.static(__dirname + '/'));
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
+
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.body.fen;
+        
+        const data = await postChessApi({ fen });
+        
+        res.json(data);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
+
+async function postChessApi(data = {}) {
+    try {
+        const response = await fetch("https://chess-api.com/v1", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    } catch (error) {
+        throw new Error("error");
+    }
+}
+
 
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
@@ -223,29 +252,7 @@ app.post('/profile', async (req, res) => {
         })
 });
 
-// // Post endpoint for the register page, processes username and password storage
-// app.post('/register', async (req, res) => {
-//     // hash the password
-//     const hash = await bcrypt.hash(req.body.password, 10);
-//     const username = req.body.username;
 
-//     // Check if the username is valid (not too long, no special characters)
-//     if (!username || username.length > 20 || /[!@#$%^&*()\/<>,.\{\[\}\]\|\\]/.test(username)) {
-//         return res.status(400).render("pages/register", { error: true, message: "Invalid input" });
-//     }
-    
-//     const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
-    
-//     // Insert the user into the database
-//     db.any(insert_query, [req.body.username, hash])
-//         .then(function (data) {
-//             res.status(200).redirect("/login");
-//         })
-//         .catch(function (err) {
-//             console.log(err);
-//             res.status(400).redirect("/register");
-//         })
-// });
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
