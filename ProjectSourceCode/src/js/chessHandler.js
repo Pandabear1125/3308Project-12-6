@@ -66,7 +66,7 @@ function getURLPlayType(name) {
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 let playType = getURLPlayType('play-type');
-console.log(playType);
+// console.log("playType:", playType);
 
 function onLoad() {
     chessCanvas = document.getElementById("chessCanvas");
@@ -141,17 +141,16 @@ function onLeave(){
 }
 
 function onClick(event) {
-    console.log(playType);
     if (playType === "player" || (playType === "computer" && currentTeam === WHITE) ){
-        console.log(playType)
+        // console.log(playType)
         let chessCanvasX = chessCanvas.getBoundingClientRect().left;
         let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
         let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
         let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
-        console.log('x:', x);
-        console.log('y:', y);
+        // console.log('x:', x);
+        // console.log('y:', y);
 
         if (checkValidMovement(x, y) === true) {
             if (checkValidCapture(x, y) === true) {
@@ -175,7 +174,7 @@ function onClick(event) {
             reRenderBoard();
 
             if (playType === "computer" && currentTeam === BLACK) {
-                console.log(playType)
+                // console.log(playType)
                 handleComputerMove();
             }
 
@@ -201,9 +200,9 @@ function parseMove(moveString) {
 
 async function handleComputerMove() {
     try {
-        console.log('called handleComputerMove');
+        // console.log('called handleComputerMove');
         // example: fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -"; 
-        console.log("fen:", fen);
+        // console.log("fen:", fen);
 
         const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`, {
             method: 'GET',
@@ -215,20 +214,21 @@ async function handleComputerMove() {
 
         const aiMove = data.move;
     
-        console.log('AI Move:', aiMove); // example: should be d7d5
+        // example: should be d7d5
+        console.log('AI Move:', aiMove); 
 
         const [source, destination] = parseMove(aiMove);
 
         // update the board state to reflect the AI's move
-        const sourceX = source.charCodeAt(0) - 97; // convert file from letter to index (e.g., 'e' -> 4)
-        const sourceY = 8 - parseInt(source[1]); // convert rank from number to index (e.g., '2' -> 6)
+        const sourceX = source.charCodeAt(0) - 97; // convert file from letter to index
+        const sourceY = 8 - parseInt(source[1]);  // convert rank from number to index
         const x = destination.charCodeAt(0) - 97;
         const y = 8 - parseInt(destination[1]);
 
-        console.log('source x:', sourceX);
-        console.log('source y:', sourceY);
-        console.log('x:', x);
-        console.log('y:', y);
+        // console.log('source x:', sourceX);
+        // console.log('source y:', sourceY);
+        // console.log('x:', x);
+        // console.log('y:', y);
 
                 if (board.tiles[y][x].pieceType === KING) {
                     if (currentTeam === WHITE) {
