@@ -164,6 +164,7 @@ function onClick(event) {
         moveSelectedPiece(x, y);
 
         changeCurrentTeam();
+
     } else {
         curX = x;
         curY = y;
@@ -345,12 +346,123 @@ function checkValidCapture(x, y) {
     else return false;
 }
 
+function generateFEN(board) {
+    let fenString = '';
+    let activeColor = 'w'; // Assume White is the active color by default
+
+  
+    // Loop through rows
+    for (let y = 0; y < 8; y++) {
+      let emptyCount = 0;
+  
+      // Loop through columns
+      for (let x = 0; x < 8; x++) {
+        const tile = board.tiles[y][x];
+  
+        if (tile.pieceType != EMPTY) {
+
+          if (emptyCount > 0) {
+            fenString += emptyCount;
+            emptyCount = 0;
+          }
+  
+//const WHITE = 0;
+// const BLACK = 1;
+// const EMPTY = -1;
+// const PAWN = 0;
+// const KNIGHT = 1;
+// const BISHOP = 2;
+// const ROOK = 3;
+// const QUEEN = 4;
+// const KING = 5;
+
+          let pieceChar = tile.pieceType;
+          if (pieceChar === PAWN){
+            pieceChar = 'p';
+          } else if (pieceChar === KNIGHT){
+            pieceChar = 'n';
+            } else if (pieceChar === BISHOP){
+            pieceChar = 'b';
+            } else if (pieceChar === ROOK){
+            pieceChar = 'r';
+            } else if (pieceChar === QUEEN){
+            pieceChar = 'q';
+            } else if (pieceChar === KING){
+            pieceChar = 'k';
+            }
+          
+            if (tile.team === WHITE) {
+              pieceChar = pieceChar.toUpperCase();
+            }
+
+          fenString += pieceChar;
+
+        } else {
+
+          emptyCount++;
+
+        }
+      }
+  
+      if (emptyCount > 0) {
+        fenString += emptyCount;
+      }
+  
+      if (y < 7) {
+        fenString += '/';
+      }
+    }
+  
+    if (currentTeam === 'WHITE') {
+        activeColor = 'w';
+      } else {
+        activeColor = 'b'; 
+      }
+
+    // Add active color component
+    fenString += ' ' + activeColor;
+  
+    // // Add castling availability component
+    // if (board.whiteCastlingKingside || board.whiteCastlingQueenside || board.blackCastlingKingside || board.blackCastlingQueenside) {
+    //   castlingAvailability = '';
+    //   if (board.whiteCastlingKingside) castlingAvailability += 'K';
+    //   if (board.whiteCastlingQueenside) castlingAvailability += 'Q';
+    //   if (board.blackCastlingKingside) castlingAvailability += 'k';
+    //   if (board.blackCastlingQueenside) castlingAvailability += 'q';
+    // }
+    // fenString += ' ' + castlingAvailability;
+  
+    // // Add en passant square component
+    // if (board.enPassantSquare) {
+    //   enPassantSquare = board.enPassantSquare;
+    // }
+    // fenString += ' ' + enPassantSquare;
+  
+    // // Add halfmove clock component
+    // if (board.halfmoveClock) {
+    //   halfmoveClock = board.halfmoveClock;
+    // }
+    // fenString += ' ' + halfmoveClock;
+  
+    // // Add fullmove clock component
+    // if (board.fullmoveClock) {
+    //   fullmoveClock = board.fullmoveClock;
+    // }
+    // fenString += ' ' + fullmoveClock;
+  
+    return fenString;
+  }
+
 function moveSelectedPiece(x, y) {
+
+    
     board.tiles[y][x].pieceType = board.tiles[curY][curX].pieceType;
     board.tiles[y][x].team = board.tiles[curY][curX].team;
-
     board.tiles[curY][curX].pieceType = EMPTY;
     board.tiles[curY][curX].team = EMPTY;
+
+    const fenPosition = generateFEN(board,x,y);
+    console.log(fenPosition); // Output: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
     curX = -1;
     curY = -1;
@@ -485,6 +597,7 @@ function getOppositeTeam(team) {
     else if (team === BLACK) return WHITE;
     else return EMPTY;
 }
+
 
 class Board {
     constructor() {
