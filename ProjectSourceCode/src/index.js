@@ -78,22 +78,31 @@ app.use(express.static(__dirname + '/'));
 
 app.get('/aiResponse', async (req, res) => {
     try {
-        const fen = req.body.fen;
-
-        const response = await axios.post("https://chess-api.com/v1", {
-            params: {
-                fen: fen
-            }
-        });
-
-        // const bestMove = response.data;
-
-        res.json({ response });
-
+        const fen = "8/1P1R4/n1r2B2/3Pp3/1k4P1/6K1/Bppr1P2/2q5 w - - 0 1";
+        
+        const data = await postChessApi({ fen });
+        
+        res.json(data);
     } catch (error) {
-        // console.error('Error:', error.response.data);
+        console.error("Error:", error);
     }
 });
+
+async function postChessApi(data = {}) {
+    try {
+        const response = await fetch("https://chess-api.com/v1", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    } catch (error) {
+        throw new Error("error");
+    }
+}
+
 
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
