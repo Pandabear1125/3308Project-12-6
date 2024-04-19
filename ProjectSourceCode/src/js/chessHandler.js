@@ -163,6 +163,8 @@ function onClick(event) {
 
         moveSelectedPiece(x, y);
 
+        
+
         changeCurrentTeam();
 
     } else {
