@@ -78,11 +78,13 @@ app.use(express.static(__dirname + '/'));
 
 app.get('/aiResponse', async (req, res) => {
     try {
-        const fen = req.body.fen;
+        const fen = req.query.fen;
         
         const data = await postChessApi({ fen });
+
+        const move = data.move;
         
-        res.json(data);
+        return res.json({ move });
     } catch (error) {
         console.error("Error:", error);
     }
@@ -102,7 +104,6 @@ async function postChessApi(data = {}) {
         throw new Error("error");
     }
 }
-
 
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
