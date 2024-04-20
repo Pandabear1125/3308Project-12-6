@@ -9,8 +9,8 @@ let BLACK_TILE_COLOR = "rgb(181, 136, 99 )";
 let HIGHLIGHT_COLOR_FOCUS = "rgba(255, 255, 255,1)";
 let HIGHLIGHT_COLOR_TAKE = "rgba(255, 99, 99,.9)";
 
-let HIGHLIGHT_DOT_COLOR = "rgba(255, 99, 99,.9)";//color(255,5,5);// rgba(166, 166, 166,.9);
-let HIGHLIGHT_DOT_RADIUS = 5;
+let HIGHLIGHT_DOT_COLOR = "rgba(22, 22, 22,.9)";//color(255,5,5);// rgba(166, 166, 166,.9);
+let HIGHLIGHT_DOT_RADIUS = 7;
 
 const WHITE = 0;
 const BLACK = 1;
@@ -58,6 +58,9 @@ let blackVictories;
 let fen = "";
 let playType = PLAYER;
 
+let blackCheck = false;
+let whiteCheck = false;
+
 document.addEventListener("DOMContentLoaded", onLoad);
 
 function updatePlayType(selectedPlayType) {
@@ -89,7 +92,6 @@ function onLoad() {
     whiteVictories = 0;
     blackVictories = 0;
 
-    startGame();
 }
 
 function loadChessPieceImages(){
@@ -100,6 +102,9 @@ function loadChessPieceImages(){
     for (const piece of pieceNames) {
       const img = new Image();
       img.src = `../resources/img/svgs/basic-set/black_${piece}.svg`;
+      img.addEventListener('load', function(){
+        reRenderBoard();
+    });
       blackPieceImages.push(img);
     }
 
@@ -118,6 +123,10 @@ function getPieceImages() {
 }
 
 function startGame() {
+
+    let btt = document.getElementById("startGameButton");
+    btt.hidden = true;
+
     board = new Board();
     curX = -1;
     curY = -1;
@@ -135,6 +144,8 @@ function startGame() {
     updateTotalVictories();
 
     GAME_STARTED = true;
+
+    ChessHandler_GameStarted();
 }
 
 function onLeave(){
@@ -160,12 +171,18 @@ function onClick(event) {
 
         if (checkValidMovement(x, y) === true) {
             if (checkValidCapture(x, y) === true) {
-                if (board.tiles[y][x].pieceType === KING) {
-                    if (currentTeam === WHITE) whiteVictories++;
-                    else blackVictories++;
+                if (blackCheck === true) {
 
-                    startGame();
+                } else if (whiteCheck === true) {
+
                 }
+                // if (board.tiles[y][x].pieceType === KING) {
+                //     if (currentTeam === WHITE) whiteVictories++;
+                //     else blackVictories++;
+
+                //     startGame();
+                // }
+
 
                 if (currentTeam === WHITE) {
                     blackCasualities[board.tiles[y][x].pieceType]++;
@@ -235,14 +252,6 @@ async function handleComputerMove() {
         console.log('x:', x);
         console.log('y:', y);
 
-                if (board.tiles[y][x].pieceType === KING) {
-                    if (currentTeam === WHITE) {
-                        whiteVictories++;
-                    } else {
-                        blackVictories++;
-                    }
-                    startGame();
-                }
                 
                 if (currentTeam === WHITE) {
                     blackCasualities[board.tiles[y][x].pieceType]++;
@@ -409,6 +418,7 @@ function checkPossiblePlay(x, y) {
 }
 
 function checkPossibleMove(x, y) {
+    if (x < 0 || x > BOARD_WIDTH - 1 || y < 0 || y > BOARD_HEIGHT - 1) return false;
     if (board.tiles[y][x].team !== EMPTY) return false;
 
     board.validMoves[y][x] = VALID;
@@ -418,10 +428,22 @@ function checkPossibleMove(x, y) {
 
 function checkPossibleCapture(x, y) {
     if (board.tiles[y][x].team !== getOppositeTeam(currentTeam)) return false;
-
+    if (board.tiles[y][x].pieceType === KING){  
+        setKingCap();
+    }
     board.validMoves[y][x] = VALID_CAPTURE;
     drawCorners(x, y, HIGHLIGHT_COLOR_TAKE);
     return true;
+}
+
+function setKingCap(){
+    if (currentTeam === WHITE) {
+        whiteCheck = false;
+        blackCheck = true;
+    } else {
+        whiteCheck = true;
+        blackCheck = false
+    }
 }
 
 function checkValidMovement(x, y) {
@@ -550,6 +572,8 @@ function changeCurrentTeam() {
         currentTeamText.textContent = "White's turn";
         currentTeam = WHITE;
     }
+
+    ChessHandler_TeamChange(currentTeam);
 }
 
 function reRenderBoard() {
@@ -753,24 +777,4 @@ class Tile {
         this.pieceType = pieceType;
         this.team = team;
     }
-}
-
-function updateColorDot (alpha) {
-    document.getElementById('colorDot').style.opacity = alpha;
-}
-function updateColorFocus (alpha) {
-    document.getElementById('colorFocus').style.opacity = alpha;
-}
-function updateColorTake(alpha) {
-    document.getElementById('colorTake').style.opacity = alpha;
-    let colorPickerValue = document.getElementById('colorTake').value;
-
-    let rgbValues = colorPickerValue.substring(1).match(/.{1,2}/g).map(hex => parseInt(hex, 16));
-
-    let rgbaString = `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, ${alpha})`;
-
-    HIGHLIGHT_COLOR_TAKE = rgbaString;
-}
-function updateDotSize (alpha) {
-    HIGHLIGHT_DOT_RADIUS = alpha;
 }
