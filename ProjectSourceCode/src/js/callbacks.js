@@ -26,7 +26,12 @@ function ChessHandlerTO_MovePiece(peiceColor, peicePosition, peiceType){
 
 //Game type can be of Player vs Player - "PVP" , Player vs AI - "PVAI" , AI vs AI - "AIVAI"
 //Player difficulty can be of Easy - "EASY", Medium - "MEDIUM", Hard - "HARD"
-function ChessHandler_GameStarted(){
-    startTimer1();
+function ChessHandler_GameEnded(){
+    clearInterval(timerInterval1); 
+    clearInterval(timerInterval2); 
 }
 
+function ChessHandler_GameStarted(){
+    resetTimer();
+    startTimer1();
+}
