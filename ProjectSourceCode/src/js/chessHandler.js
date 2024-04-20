@@ -2,7 +2,7 @@
 
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
-const TILE_SIZE = 50; //in pixels
+const TILE_SIZE = 100; //in pixels 400/8 = 50 pixels 800/8 = 100 pixels
 
 let WHITE_TILE_COLOR = "rgb(240, 217, 181)";
 let BLACK_TILE_COLOR = "rgb(181, 136, 99 )";
@@ -33,6 +33,15 @@ const VALID_CAPTURE = 2;
 
 let blackPieceImages = [];
 let whitePieceImages = [];
+
+const piecesCharacters = {
+    0: '♙',
+    1: '♘',
+    2: '♗',
+    3: '♖',
+    4: '♕',
+    5: '♔'
+};
 
 //Route to get chess pieces or make them ourselfs. 
 let chessCanvas;
@@ -461,6 +470,8 @@ function setKingCap(){
 }
 
 function checkValidMovement(x, y) {
+    if (x < 0 || x > BOARD_WIDTH - 1 || y < 0 || y > BOARD_HEIGHT - 1) return false;
+
     if (board.validMoves[y][x] === VALID || board.validMoves[y][x] === VALID_CAPTURE) return true;
     else return false;
 }
@@ -680,10 +691,10 @@ function updateCasualities(casualities, text) {
         if (casualities[i] === 0) continue;
 
         if (none) {
-            text.textContent = casualities[i] + " ";//+ piecesCharacters[i];
+            text.textContent = casualities[i] + " "+ piecesCharacters[i];
             none = false;
         } else {
-            text.textContent += " - " + casualities[i];//+ " " + piecesCharacters[i];
+            text.textContent += " - " + casualities[i]+ " " + piecesCharacters[i];
         }
     }
 
