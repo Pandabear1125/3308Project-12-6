@@ -1,30 +1,29 @@
 
 
-    <script type="text/javascript" src="../../js/callbacks.js"></script> 
+        <script type="text/javascript" src="../../js/callbacks.js"></script> 
     <script type="text/javascript" src="../../js/chessHandler.js"></script> 
 
     <link rel="stylesheet" href="../../css/boardCSS.css">
 
-    <label for="colorDot">Color Picker for dot:</label>
-    <input type="color" id="colorDot">
-    <input type="range" id="colorDotAlpha" width="1px" onchange="updateColorAlphaDot(this.value);" min="0" max="1" step="0.05" value="1">
-
-    <label for="colorFocus">Color Picker for focus:</label>
-    <input type="color" id="colorFocus">
-    <input type="range" id="colorFocusAlpha" onchange="updateColorAlphaFocus(this.value);" min="0" max="1" step="0.05" value="1">
-<div></div>
-    <label for="colorTake">Color Picker for take:</label>
-    <input type="color" id="colorTake">
-    <input type="range" id="colorTakeAlpha" onchange="updateColorAlphaTake(this.value);" min="0" max="1" step="0.05" value="1">
-
-    <label for="dotRadius">Size for Dot:</label>
-    <input type="range" id="dotRadius" onchange="updateDotSize(this.value);" min="0" max="10" step="0.1" value="10">
 
 
-    <h1>Chess</h1>
-    <canvas id="chessCanvas" width="400" height="400"></canvas>
-    <h2 id="currentTeamText"></h2>
-    <h3 hidden = true id="whiteCasualities"></h2>
-    <h3 hidden = true id="blackCasualities"></h2>
-    <h2 hidden = true id="totalVictories"></h2>
 
+<button type="button" class="btn btn-success" onclick="startGame()" id = "startGameButton">Start Game</button>
+
+
+<div class="container">
+  <h2 id="currentTeamText"></h2>
+  <div id="whiteCasualitiesD">
+    <span>White Pieces lost: </span>
+    <span id="whiteCasualities"></span>
+  </div>
+  </div>
+    <canvas id="chessCanvas" width="800" height="800"></canvas>
+<div class="container">
+
+  <div id="blackCasualtiesD">
+    <span>Black Pieces lost: </span>
+    <span id="blackCasualities"></span>
+  </div>
+  <h2 id="totalVictories"></h2>
+</div>
