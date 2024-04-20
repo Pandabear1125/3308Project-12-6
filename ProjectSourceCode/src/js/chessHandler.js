@@ -148,6 +148,14 @@ function startGame() {
     ChessHandler_GameStarted();
 }
 
+function endGame(){
+    GAME_STARTED = false;
+    let btt = document.getElementById("startGameButton");
+    btt.hidden = false;
+    currentTeamText.textContent = "Game Over";
+    ChessHandler_GameEnded();
+}
+
 function onLeave(){
     curX = -1;
     curY = -1;
@@ -160,6 +168,9 @@ function onLeave(){
 function onClick(event) {
     if (playType === PLAYER || (playType === COMPUTER && currentTeam === WHITE) ){
         console.log(playType)
+        if (GAME_STARTED === false) {
+            return;
+        }
         let chessCanvasX = chessCanvas.getBoundingClientRect().left;
         let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
@@ -176,12 +187,15 @@ function onClick(event) {
                 } else if (whiteCheck === true) {
 
                 }
-                // if (board.tiles[y][x].pieceType === KING) {
-                //     if (currentTeam === WHITE) whiteVictories++;
-                //     else blackVictories++;
+                if (board.tiles[y][x].pieceType === KING) {
+                    if (currentTeam === WHITE) 
+                        whiteVictories++;
+                    else 
+                        blackVictories++;
 
-                //     startGame();
-                // }
+                    endGame();
+                    return;
+                }
 
 
                 if (currentTeam === WHITE) {
