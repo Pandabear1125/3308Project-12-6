@@ -195,6 +195,77 @@ const auth = (req, res, next) => {
 };
 // Authentication Required
 app.use(auth);
+
+// get the user's data
+app.get('/get-user-data', (req, res) => {
+    db.any('SELECT * FROM users WHERE id = $1', [req.session.user.id])
+        .then(function (data) {
+            let user = data[0];
+
+            let user_win_rate = user.wins / (user.wins + user.losses) * 100;
+
+            let user_points = user.current_points;
+        })
+        .catch(function (err) {
+            console.log(err);
+            res.status(400).redirect("/profile");
+        });
+});
+
+// set user's points
+// takes in a points argument and sets the user's points to that value
+app.post('/set-points', (req, res) => {
+    db.any('UPDATE users SET current_points = $1 WHERE id = $2', [req.body.points, req.session.user.id])
+        .then(function (data) {
+            // Update the session user's points
+            req.session.user.current_points = req.body.points;
+            // console.log(req.session.user);
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+});
+
+// update user's wins
+// no arguments required, grabs user id from session
+// increments the user's wins by 1
+app.post('/update-wins', (req, res) => {
+    db.any('UPDATE users SET games_won = games_won + 1 WHERE id = $1', [req.session.user.id])
+        .then(function (data) {
+            // Update the session user's wins
+            req.session.user.games_won += 1;
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+});
+
+// update user's losses
+// no arguments required, grabs user id from session
+// increments the user's losses by 1
+app.post('/update-losses', (req, res) => {
+    db.any('UPDATE users SET games_lost = games_lost + 1 WHERE id = $1', [req.session.user.id])
+        .then(function (data) {
+            // Update the session user's losses
+            req.session.user.games_lost += 1;
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+});
+
+// update user's bio
+// takes in a bio string and sets the user's bio to that 
+app.post('/update-bio', (req, res) => {
+    db.any('UPDATE users SET bio = $1 WHERE id = $2', [req.body.bio, req.session.user.id])
+        .then(function (data) {
+            // Update the session user's bio
+            req.session.user.bio = req.body.bio;
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+});
   
 // Render endpoint for the home page
 app.get('/home', (req, res) => {
