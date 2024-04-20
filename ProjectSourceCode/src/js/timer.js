@@ -6,6 +6,41 @@ let sec2 = 0;
 let timerInterval1;
 let timerInterval2;
 let currentPlayer = 1;
+var gt = 'standard';
+
+function resetTimer() {
+    clearInterval(timerInterval1); 
+    clearInterval(timerInterval2); 
+    var minutes;
+    sec1 = 0;
+    sec2 = 0;
+    switch (gt) {
+        case 'standard':
+            minutes = 10;
+            min2 = 10;
+            min1 = 10;
+            break;
+        case 'blitz':   
+            minutes = 5;
+            min2 = 5;
+            min1 = 5;  
+            break;
+        case 'bullet':
+            minutes = 3;
+            min2 = 3;
+            min1 = 3;
+            break;
+        default:
+            minutes = 10; // Default to standard if game type is not recognized
+            min2 = 10;
+            min1 = 10;
+    }
+    // Set the initial timer values
+    document.getElementById('min1').textContent = minutes;
+    document.getElementById('min2').textContent = minutes;
+    document.getElementById('sec1').innerText = "00";
+    document.getElementById('sec2').innerText = "00";
+}
 
 function startTimer1() {
     clearInterval(timerInterval2);
@@ -69,21 +104,6 @@ function switchPlayer() {
 }
 
 function updateTimerBasedOnGameType(gameType) {
-    var minutes;
-        switch (gameType) {
-            case 'standard':
-                minutes = 10;
-                break;
-            case 'blitz':
-                minutes = 5;
-                break;
-            case 'bullet':
-                minutes = 3;
-                break;
-            default:
-                minutes = 10; // Default to standard if game type is not recognized
-        }
-        // Set the initial timer values
-        document.getElementById('min1').textContent = minutes;
-        document.getElementById('min2').textContent = minutes;
+    gt = gameType;
+
 }
