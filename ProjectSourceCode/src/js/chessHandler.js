@@ -200,9 +200,21 @@ function parseMove(moveString) {
 
 async function handleComputerMove() {
     try {
-        // console.log('called handleComputerMove');
+        console.log('called handleComputerMove');
         // example: fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -"; 
-        // console.log("fen:", fen);
+        console.log("fen:", fen);
+
+        // if chess-api.com is not working, redirect to "Player vs Player"
+        const timeoutPromise = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject(new Error('Request timed out'));
+            }, 2500);
+        });
+
+        timeoutPromise.catch((error) => {
+            console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
+            window.location.href = '/game?game-type=standard&play-type=player';
+        });
 
         const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`, {
             method: 'GET',
@@ -210,8 +222,8 @@ async function handleComputerMove() {
                 'Content-Type': 'application/json'
             }
         });
-        const data = await response.json();
 
+        const data = await response.json();
         const aiMove = data.move;
     
         // example: should be d7d5
@@ -230,25 +242,25 @@ async function handleComputerMove() {
         // console.log('x:', x);
         // console.log('y:', y);
 
-                if (board.tiles[y][x].pieceType === KING) {
-                    if (currentTeam === WHITE) {
-                        whiteVictories++;
-                    } else {
-                        blackVictories++;
-                    }
-                    startGame();
-                }
+        if (board.tiles[y][x].pieceType === KING) {
+            if (currentTeam === WHITE) {
+                whiteVictories++;
+            } else {
+                blackVictories++;
+            }
+            startGame();
+        }
                 
-                if (currentTeam === WHITE) {
-                    blackCasualities[board.tiles[y][x].pieceType]++;
-                    updateBlackTakes();
-                } else {
-                    whiteCasualities[board.tiles[y][x].pieceType]++;
-                    updateWhiteTakes();
-                }
-            fen = moveAIPiece(sourceX, sourceY, x, y);
+        if (currentTeam === WHITE) {
+            blackCasualities[board.tiles[y][x].pieceType]++;
+            updateBlackTakes();
+        } else {
+            whiteCasualities[board.tiles[y][x].pieceType]++;
+            updateWhiteTakes();
+        }
+        fen = moveAIPiece(sourceX, sourceY, x, y);
             
-            changeCurrentTeam();
+        changeCurrentTeam();
         
         reRenderBoard();
     } catch (error) {
