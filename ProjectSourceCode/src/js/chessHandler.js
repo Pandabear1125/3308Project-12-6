@@ -65,26 +65,20 @@ let whiteVictories;
 let blackVictories;
 
 let fen = "";
-let playType = PLAYER;
 
 let blackCheck = false;
 let whiteCheck = false;
 
 document.addEventListener("DOMContentLoaded", onLoad);
 
-function updatePlayType(selectedPlayType) {
-    switch (selectedPlayType) {
-        case "player":
-            playType = PLAYER;
-            break;
-        case "computer":
-            playType = COMPUTER;
-            break;
-        default:
-            playType = PLAYER; // default to "PvP" if player type is not recognized
-            break;
-    }
+function getURLPlayType(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
+let playType = getURLPlayType('play-type');
+// console.log("playType:", playType);
 
 function onLoad() {
     chessCanvas = document.getElementById("chessCanvas");
@@ -180,14 +174,15 @@ function onClick(event) {
         if (GAME_STARTED === false) {
             return;
         }
+
         let chessCanvasX = chessCanvas.getBoundingClientRect().left;
         let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
         let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
         let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
-        console.log('x:', x);
-        console.log('y:', y);
+        // console.log('x:', x);
+        // console.log('y:', y);
 
         if (checkValidMovement(x, y) === true) {
             if (checkValidCapture(x, y) === true) {
@@ -219,8 +214,8 @@ function onClick(event) {
             changeCurrentTeam();
             reRenderBoard();
 
-            if (playType === COMPUTER && currentTeam === BLACK) {
-                console.log(playType)
+            if (playType === "computer" && currentTeam === BLACK) {
+                // console.log(playType)
                 handleComputerMove();
             }
 
@@ -250,42 +245,65 @@ async function handleComputerMove() {
         // example: fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -"; 
         console.log("fen:", fen);
 
+        // if chess-api.com is not working, redirect to "Player vs Player"
+        const timeoutPromise = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject(new Error('Request timed out'));
+            }, 2500);
+        });
+
+        timeoutPromise.catch((error) => {
+            console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
+            window.location.href = '/game?game-type=standard&play-type=player';
+        });
+
         const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        const data = await response.json();
 
+        const data = await response.json();
         const aiMove = data.move;
     
-        console.log('AI Move:', aiMove); // example: should be d7d5
+        // example: should be d7d5
+        console.log('AI Move:', aiMove); 
 
         const [source, destination] = parseMove(aiMove);
 
         // update the board state to reflect the AI's move
-        const sourceX = source.charCodeAt(0) - 97; // convert file from letter to index (e.g., 'e' -> 4)
-        const sourceY = 8 - parseInt(source[1]); // convert rank from number to index (e.g., '2' -> 6)
+        const sourceX = source.charCodeAt(0) - 97; // convert file from letter to index
+        const sourceY = 8 - parseInt(source[1]);  // convert rank from number to index
         const x = destination.charCodeAt(0) - 97;
         const y = 8 - parseInt(destination[1]);
 
-        console.log('source x:', sourceX);
-        console.log('source y:', sourceY);
-        console.log('x:', x);
-        console.log('y:', y);
+        // console.log('source x:', sourceX);
+        // console.log('source y:', sourceY);
+        // console.log('x:', x);
+        // console.log('y:', y);
+
+
+        if (board.tiles[y][x].pieceType === KING) {
+            if (currentTeam === WHITE) {
+                whiteVictories++;
+            } else {
+                blackVictories++;
+            }
+            startGame();
+        }
 
                 
-                if (currentTeam === WHITE) {
-                    blackCasualities[board.tiles[y][x].pieceType]++;
-                    updateBlackTakes();
-                } else {
-                    whiteCasualities[board.tiles[y][x].pieceType]++;
-                    updateWhiteTakes();
-                }
-            fen = moveAIPiece(sourceX, sourceY, x, y);
+        if (currentTeam === WHITE) {
+            blackCasualities[board.tiles[y][x].pieceType]++;
+            updateBlackTakes();
+        } else {
+            whiteCasualities[board.tiles[y][x].pieceType]++;
+            updateWhiteTakes();
+        }
+        fen = moveAIPiece(sourceX, sourceY, x, y);
             
-            changeCurrentTeam();
+        changeCurrentTeam();
         
         reRenderBoard();
     } catch (error) {

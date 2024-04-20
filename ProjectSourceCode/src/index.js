@@ -82,6 +82,12 @@ app.get('/aiResponse', async (req, res) => {
         
         const data = await postChessApi({ fen });
 
+        // if chess-api.com is not working, redirect to "Player vs Player"
+        if (!data || !data.move) {
+            console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
+            return res.redirect('/game?game-type=standard&play-type=player');
+        }
+
         const move = data.move;
         
         return res.json({ move });
