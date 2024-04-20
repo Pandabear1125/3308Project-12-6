@@ -15,8 +15,8 @@ let HIGHLIGHT_DOT_RADIUS = 7;
 const WHITE = 0;
 const BLACK = 1;
 
-const PLAYER = 0;
-const COMPUTER = 1;
+const PLAYER = 'player';
+const COMPUTER = 'computer';
 
 const EMPTY = -1;
 
