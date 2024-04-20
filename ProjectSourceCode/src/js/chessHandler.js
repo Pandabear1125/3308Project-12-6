@@ -10,7 +10,7 @@ let HIGHLIGHT_COLOR_FOCUS = "rgba(255, 255, 255,1)";
 let HIGHLIGHT_COLOR_TAKE = "rgba(255, 99, 99,.9)";
 
 let HIGHLIGHT_DOT_COLOR = "rgba(22, 22, 22,.9)";//color(255,5,5);// rgba(166, 166, 166,.9);
-let HIGHLIGHT_DOT_RADIUS = 7;
+let HIGHLIGHT_DOT_RADIUS = 12;
 
 const WHITE = 0;
 const BLACK = 1;
