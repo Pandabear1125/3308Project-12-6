@@ -216,9 +216,9 @@ app.get('/logout', (req, res) => {
     res.render('pages/logout');
 });
 
-app.get('/profile', (req, res) => {
-    const find_user = "SELECT * FROM users WHERE user_id = $1;";
-    db.any(find_user, [req.session.user.user_id ])//Do I really need this here to check if the user is in the database a second time?
+app.get('/profile', async (req, res) => {
+    const find_games = "SELECT games.date FROM users JOIN users_to_games ON users.user_id = users_to_games.user_id JOIN games ON users_to_games.game_id = games.game_id WHERE users.user_id = $1 GROUP BY games.game_id ORDER BY games.date DESC;";
+    db.any(find_games, [req.session.user.user_id ])
         .then(async function (data) {
             var user = data[0];
             if(req.session.user.bio == ''){
@@ -227,7 +227,17 @@ app.get('/profile', (req, res) => {
             else{
                 var newBio = req.session.user.bio
             }
-            res.render('pages/profile', {name:req.session.user.username, bio: newBio, pic: req.session.user.picurl});
+            console.log(data);
+            res.render('pages/profile', {
+                name:req.session.user.username,
+                bio: newBio,
+                pic: req.session.user.picurl,
+                total: req.session.user.games_won + req.session.user.games_lost,
+                totalWins: req.session.user.games_won,
+                totalLosses: req.session.user.games_lost,
+                winToLosses: req.session.user.games_won / req.session.user.games_lost,
+                lastPlay: user
+            });//TODO: Maybe create another query to get the games using for each in handelbars
         })
         .catch(function (err) {
             console.log(err, req.session.user);//TODO: Get rid of this before final submit because it could hold sensitive data

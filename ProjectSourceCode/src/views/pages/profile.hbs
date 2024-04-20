@@ -1,3 +1,4 @@
+<link href="../../css/variousRules.css" rel="stylesheet">
 <div class="container-fluid text-center"> 
     <div class="row content">     
             {{!-- TODO: 
@@ -39,16 +40,24 @@
                       <table>
                             <tbody>
                                 <tr>
-                                <td>Games Played</td>
-                                <td>0</td>
+                                <td>Games Played:</td>
+                                <td>{{total}}</td>
                                 </tr>
                                 <tr>
-                                <td>Win to Loss Ratio</td>
-                                <td>0</td>
+                                <td>Total Wins:</td>
+                                <td>{{totalWins}}</td>
+                                </tr>
+                                <tr>
+                                <td>Total Losses:</td>
+                                <td>{{totalLosses}}</td>
+                                </tr>
+                                <tr>
+                                <td>Win to Loss Ratio:</td>
+                                <td>{{winToLoss}}</td>
                                 </tr>
                                 <tr>
                                 <td>Time When Last Game Was Played</td>
-                                <td>1/1/1970 00:00:00</td>
+                                <td>{{lastPlay}}</td> {{!-- 1/1/1970 00:00:00 --}}
                                 </tr>
                             </tbody>
                         </table>
