@@ -2,21 +2,21 @@
 
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
-const TILE_SIZE = 50; //in pixels
+const TILE_SIZE = 100; //in pixels 400/8 = 50 pixels 800/8 = 100 pixels
 
 let WHITE_TILE_COLOR = "rgb(240, 217, 181)";
 let BLACK_TILE_COLOR = "rgb(181, 136, 99 )";
 let HIGHLIGHT_COLOR_FOCUS = "rgba(255, 255, 255,1)";
 let HIGHLIGHT_COLOR_TAKE = "rgba(255, 99, 99,.9)";
 
-let HIGHLIGHT_DOT_COLOR = "rgba(255, 99, 99,.9)";//color(255,5,5);// rgba(166, 166, 166,.9);
-let HIGHLIGHT_DOT_RADIUS = 5;
+let HIGHLIGHT_DOT_COLOR = "rgba(22, 22, 22,.9)";//color(255,5,5);// rgba(166, 166, 166,.9);
+let HIGHLIGHT_DOT_RADIUS = 12;
 
 const WHITE = 0;
 const BLACK = 1;
 
-const PLAYER = 0;
-const COMPUTER = 1;
+const PLAYER = 'player';
+const COMPUTER = 'computer';
 
 const EMPTY = -1;
 
@@ -33,6 +33,15 @@ const VALID_CAPTURE = 2;
 
 let blackPieceImages = [];
 let whitePieceImages = [];
+
+const piecesCharacters = {
+    0: '♙',
+    1: '♘',
+    2: '♗',
+    3: '♖',
+    4: '♕',
+    5: '♔'
+};
 
 //Route to get chess pieces or make them ourselfs. 
 let chessCanvas;
@@ -56,6 +65,9 @@ let whiteVictories;
 let blackVictories;
 
 let fen = "";
+
+let blackCheck = false;
+let whiteCheck = false;
 
 document.addEventListener("DOMContentLoaded", onLoad);
 
@@ -83,7 +95,6 @@ function onLoad() {
     whiteVictories = 0;
     blackVictories = 0;
 
-    startGame();
 }
 
 function loadChessPieceImages(){
@@ -94,6 +105,9 @@ function loadChessPieceImages(){
     for (const piece of pieceNames) {
       const img = new Image();
       img.src = `../resources/img/svgs/basic-set/black_${piece}.svg`;
+      img.addEventListener('load', function(){
+        reRenderBoard();
+    });
       blackPieceImages.push(img);
     }
 
@@ -112,6 +126,10 @@ function getPieceImages() {
 }
 
 function startGame() {
+
+    let btt = document.getElementById("startGameButton");
+    btt.hidden = true;
+
     board = new Board();
     curX = -1;
     curY = -1;
@@ -129,6 +147,16 @@ function startGame() {
     updateTotalVictories();
 
     GAME_STARTED = true;
+
+    ChessHandler_GameStarted();
+}
+
+function endGame(){
+    GAME_STARTED = false;
+    let btt = document.getElementById("startGameButton");
+    btt.hidden = false;
+    currentTeamText.textContent = "Game Over";
+    ChessHandler_GameEnded();
 }
 
 function onLeave(){
@@ -141,8 +169,12 @@ function onLeave(){
 }
 
 function onClick(event) {
-    if (playType === "player" || (playType === "computer" && currentTeam === WHITE) ){
-        // console.log(playType)
+    if (playType === PLAYER || (playType === COMPUTER && currentTeam === WHITE) ){
+        console.log(playType)
+        if (GAME_STARTED === false) {
+            return;
+        }
+
         let chessCanvasX = chessCanvas.getBoundingClientRect().left;
         let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
@@ -154,12 +186,21 @@ function onClick(event) {
 
         if (checkValidMovement(x, y) === true) {
             if (checkValidCapture(x, y) === true) {
-                if (board.tiles[y][x].pieceType === KING) {
-                    if (currentTeam === WHITE) whiteVictories++;
-                    else blackVictories++;
+                if (blackCheck === true) {
 
-                    startGame();
+                } else if (whiteCheck === true) {
+
                 }
+                if (board.tiles[y][x].pieceType === KING) {
+                    if (currentTeam === WHITE) 
+                        whiteVictories++;
+                    else 
+                        blackVictories++;
+
+                    endGame();
+                    return;
+                }
+
 
                 if (currentTeam === WHITE) {
                     blackCasualities[board.tiles[y][x].pieceType]++;
@@ -200,9 +241,21 @@ function parseMove(moveString) {
 
 async function handleComputerMove() {
     try {
-        // console.log('called handleComputerMove');
+        console.log('called handleComputerMove');
         // example: fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -"; 
-        // console.log("fen:", fen);
+        console.log("fen:", fen);
+
+        // if chess-api.com is not working, redirect to "Player vs Player"
+        const timeoutPromise = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject(new Error('Request timed out'));
+            }, 2500);
+        });
+
+        timeoutPromise.catch((error) => {
+            console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
+            window.location.href = '/game?game-type=standard&play-type=player';
+        });
 
         const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`, {
             method: 'GET',
@@ -210,8 +263,8 @@ async function handleComputerMove() {
                 'Content-Type': 'application/json'
             }
         });
-        const data = await response.json();
 
+        const data = await response.json();
         const aiMove = data.move;
     
         // example: should be d7d5
@@ -230,25 +283,27 @@ async function handleComputerMove() {
         // console.log('x:', x);
         // console.log('y:', y);
 
-                if (board.tiles[y][x].pieceType === KING) {
-                    if (currentTeam === WHITE) {
-                        whiteVictories++;
-                    } else {
-                        blackVictories++;
-                    }
-                    startGame();
-                }
+
+        if (board.tiles[y][x].pieceType === KING) {
+            if (currentTeam === WHITE) {
+                whiteVictories++;
+            } else {
+                blackVictories++;
+            }
+            startGame();
+        }
+
                 
-                if (currentTeam === WHITE) {
-                    blackCasualities[board.tiles[y][x].pieceType]++;
-                    updateBlackTakes();
-                } else {
-                    whiteCasualities[board.tiles[y][x].pieceType]++;
-                    updateWhiteTakes();
-                }
-            fen = moveAIPiece(sourceX, sourceY, x, y);
+        if (currentTeam === WHITE) {
+            blackCasualities[board.tiles[y][x].pieceType]++;
+            updateBlackTakes();
+        } else {
+            whiteCasualities[board.tiles[y][x].pieceType]++;
+            updateWhiteTakes();
+        }
+        fen = moveAIPiece(sourceX, sourceY, x, y);
             
-            changeCurrentTeam();
+        changeCurrentTeam();
         
         reRenderBoard();
     } catch (error) {
@@ -404,6 +459,7 @@ function checkPossiblePlay(x, y) {
 }
 
 function checkPossibleMove(x, y) {
+    if (x < 0 || x > BOARD_WIDTH - 1 || y < 0 || y > BOARD_HEIGHT - 1) return false;
     if (board.tiles[y][x].team !== EMPTY) return false;
 
     board.validMoves[y][x] = VALID;
@@ -413,13 +469,27 @@ function checkPossibleMove(x, y) {
 
 function checkPossibleCapture(x, y) {
     if (board.tiles[y][x].team !== getOppositeTeam(currentTeam)) return false;
-
+    if (board.tiles[y][x].pieceType === KING){  
+        setKingCap();
+    }
     board.validMoves[y][x] = VALID_CAPTURE;
     drawCorners(x, y, HIGHLIGHT_COLOR_TAKE);
     return true;
 }
 
+function setKingCap(){
+    if (currentTeam === WHITE) {
+        whiteCheck = false;
+        blackCheck = true;
+    } else {
+        whiteCheck = true;
+        blackCheck = false
+    }
+}
+
 function checkValidMovement(x, y) {
+    if (x < 0 || x > BOARD_WIDTH - 1 || y < 0 || y > BOARD_HEIGHT - 1) return false;
+
     if (board.validMoves[y][x] === VALID || board.validMoves[y][x] === VALID_CAPTURE) return true;
     else return false;
 }
@@ -545,6 +615,8 @@ function changeCurrentTeam() {
         currentTeamText.textContent = "White's turn";
         currentTeam = WHITE;
     }
+
+    ChessHandler_TeamChange(currentTeam);
 }
 
 function reRenderBoard() {
@@ -637,10 +709,10 @@ function updateCasualities(casualities, text) {
         if (casualities[i] === 0) continue;
 
         if (none) {
-            text.textContent = casualities[i] + " ";//+ piecesCharacters[i];
+            text.textContent = casualities[i] + " "+ piecesCharacters[i];
             none = false;
         } else {
-            text.textContent += " - " + casualities[i];//+ " " + piecesCharacters[i];
+            text.textContent += " - " + casualities[i]+ " " + piecesCharacters[i];
         }
     }
 
@@ -748,24 +820,4 @@ class Tile {
         this.pieceType = pieceType;
         this.team = team;
     }
-}
-
-function updateColorDot (alpha) {
-    document.getElementById('colorDot').style.opacity = alpha;
-}
-function updateColorFocus (alpha) {
-    document.getElementById('colorFocus').style.opacity = alpha;
-}
-function updateColorTake(alpha) {
-    document.getElementById('colorTake').style.opacity = alpha;
-    let colorPickerValue = document.getElementById('colorTake').value;
-
-    let rgbValues = colorPickerValue.substring(1).match(/.{1,2}/g).map(hex => parseInt(hex, 16));
-
-    let rgbaString = `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, ${alpha})`;
-
-    HIGHLIGHT_COLOR_TAKE = rgbaString;
-}
-function updateDotSize (alpha) {
-    HIGHLIGHT_DOT_RADIUS = alpha;
 }

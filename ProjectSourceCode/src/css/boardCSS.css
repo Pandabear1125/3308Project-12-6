@@ -1,9 +1,20 @@
 #chessCanvas {
     display: block;
-    margin: 0 auto;
-    width: 400px;
-    height: 400px;
+    margin: auto;
+    width: 800px;
+    height: 800px;
 }
 input[type="range"] {
     width:100px;
+  }
+  .container {
+    width: 400px; /* Adjust the width as needed */
+    margin: 0 auto; /* Center the container horizontally */
+    text-align: center; /* Center the text within the container */
+  }
+
+  #whiteCasualtiesD, #blackCasualtiesD {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
