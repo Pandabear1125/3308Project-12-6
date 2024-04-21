@@ -3,6 +3,7 @@
 // *****************************************************
 
 const express = require('express'); // To build an application server or API
+const fetch = require('node-fetch');
 const app = express();
 const handlebars = require('express-handlebars');
 const path = require('path');
@@ -74,6 +75,35 @@ app.use(express.static(__dirname + '/'));
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
+
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.query.fen;
+        
+        const data = await postChessApi({ fen });
+
+        const move = data.move;
+        
+        return res.json({ move });
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
+
+async function postChessApi(data = {}) {
+    try {
+        const response = await fetch("https://chess-api.com/v1", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    } catch (error) {
+        throw new Error("error");
+    }
+}
 
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
@@ -186,6 +216,8 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.render('pages/logout');
 });
+
+
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->

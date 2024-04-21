@@ -1,5 +1,4 @@
-const OpenAI = require('openai');
-const openai = new OpenAI('<api key here>');
+// const fetch = require('node-fetch');
 
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
@@ -15,6 +14,9 @@ let HIGHLIGHT_DOT_RADIUS = 5;
 
 const WHITE = 0;
 const BLACK = 1;
+
+const PLAYER = 0;
+const COMPUTER = 1;
 
 const EMPTY = -1;
 
@@ -33,9 +35,6 @@ let blackPieceImages = [];
 let whitePieceImages = [];
 
 //Route to get chess pieces or make them ourselfs. 
-
-
-
 let chessCanvas;
 let chess2dContext;
 let currentTeamText;
@@ -45,6 +44,7 @@ let totalVictoriesText;
 
 let board;
 let currentTeam;
+let GAME_STARTED = false;
 
 let curX;
 let curY;
@@ -55,15 +55,24 @@ let blackCasualities;
 let whiteVictories;
 let blackVictories;
 
+let fen = "";
+
 document.addEventListener("DOMContentLoaded", onLoad);
 
+function getURLPlayType(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+}
+let playType = getURLPlayType('play-type');
+// console.log("playType:", playType);
+
 function onLoad() {
-
-
-
     chessCanvas = document.getElementById("chessCanvas");
     chess2dContext = chessCanvas.getContext("2d");
     chessCanvas.addEventListener("click", onClick);
+    chessCanvas.addEventListener("mouseleave", onLeave);
 
     currentTeamText = document.getElementById("currentTeamText");
 
@@ -74,16 +83,12 @@ function onLoad() {
     whiteVictories = 0;
     blackVictories = 0;
 
-
     startGame();
 }
-
 
 function loadChessPieceImages(){
   
     const pieceNames = ['pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
-  
-
   
     // Load black chess piece images
     for (const piece of pieceNames) {
@@ -102,18 +107,14 @@ function loadChessPieceImages(){
       }
 };
 
-
 function getPieceImages() {
     loadChessPieceImages();
 }
-
-
 
 function startGame() {
     board = new Board();
     curX = -1;
     curY = -1;
-
     
     currentTeam = WHITE;
     currentTeamText.textContent = "White's turn";
@@ -123,45 +124,136 @@ function startGame() {
 
     getPieceImages();
     reRenderBoard();
-    WhiteTakes();
+    updateWhiteTakes();
     updateBlackTakes();
     updateTotalVictories();
+
+    GAME_STARTED = true;
+}
+
+function onLeave(){
+    curX = -1;
+    curY = -1;
+    
+    if (GAME_STARTED){
+        reRenderBoard();
+    }
 }
 
 function onClick(event) {
-    let chessCanvasX = chessCanvas.getBoundingClientRect().left;
-    let chessCanvasY = chessCanvas.getBoundingClientRect().top;
+    if (playType === "player" || (playType === "computer" && currentTeam === WHITE) ){
+        // console.log(playType)
+        let chessCanvasX = chessCanvas.getBoundingClientRect().left;
+        let chessCanvasY = chessCanvas.getBoundingClientRect().top;
 
-    let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
-    let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
+        let x = Math.floor((event.clientX - chessCanvasX) / TILE_SIZE);
+        let y = Math.floor((event.clientY - chessCanvasY) / TILE_SIZE);
 
-    if (checkValidMovement(x, y) === true) {
-        if (checkValidCapture(x, y) === true) {
-            if (board.tiles[y][x].pieceType === KING) {
-                if (currentTeam === WHITE) whiteVictories++;
-                else blackVictories++;
+        // console.log('x:', x);
+        // console.log('y:', y);
 
-                startGame();
+        if (checkValidMovement(x, y) === true) {
+            if (checkValidCapture(x, y) === true) {
+                if (board.tiles[y][x].pieceType === KING) {
+                    if (currentTeam === WHITE) whiteVictories++;
+                    else blackVictories++;
+
+                    startGame();
+                }
+
+                if (currentTeam === WHITE) {
+                    blackCasualities[board.tiles[y][x].pieceType]++;
+                    updateBlackTakes();
+                } else {
+                    whiteCasualities[board.tiles[y][x].pieceType]++;
+                    updateWhiteTakes();
+                }
+            }
+            fen = moveSelectedPiece(x, y);
+            changeCurrentTeam();
+            reRenderBoard();
+
+            if (playType === "computer" && currentTeam === BLACK) {
+                // console.log(playType)
+                handleComputerMove();
             }
 
-            if (currentTeam === WHITE) {
-                blackCasualities[board.tiles[y][x].pieceType]++;
-                updateBlackTakes();
-            } else {
-                whiteCasualities[board.tiles[y][x].pieceType]++;
-                updateWhiteTakes();
-            }
+        } else {
+            curX = x;
+            curY = y;
+            reRenderBoard();
         }
+    }
+}
 
-        moveSelectedPiece(x, y);
-
-        changeCurrentTeam();
-    } else {
-        curX = x;
-        curY = y;
+function parseMove(moveString) {
+    if (!/^([a-h][1-8]){2}$/.test(moveString)) {
+        throw new Error('Invalid move string');
     }
 
-    reRenderBoard();
+    const source = moveString.slice(0, 2);
+    const destination = moveString.slice(2, 4);
+
+    return [source, destination];
+}
+
+
+async function handleComputerMove() {
+    try {
+        // console.log('called handleComputerMove');
+        // example: fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -"; 
+        // console.log("fen:", fen);
+
+        const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+
+        const aiMove = data.move;
+    
+        // example: should be d7d5
+        console.log('AI Move:', aiMove); 
+
+        const [source, destination] = parseMove(aiMove);
+
+        // update the board state to reflect the AI's move
+        const sourceX = source.charCodeAt(0) - 97; // convert file from letter to index
+        const sourceY = 8 - parseInt(source[1]);  // convert rank from number to index
+        const x = destination.charCodeAt(0) - 97;
+        const y = 8 - parseInt(destination[1]);
+
+        // console.log('source x:', sourceX);
+        // console.log('source y:', sourceY);
+        // console.log('x:', x);
+        // console.log('y:', y);
+
+                if (board.tiles[y][x].pieceType === KING) {
+                    if (currentTeam === WHITE) {
+                        whiteVictories++;
+                    } else {
+                        blackVictories++;
+                    }
+                    startGame();
+                }
+                
+                if (currentTeam === WHITE) {
+                    blackCasualities[board.tiles[y][x].pieceType]++;
+                    updateBlackTakes();
+                } else {
+                    whiteCasualities[board.tiles[y][x].pieceType]++;
+                    updateWhiteTakes();
+                }
+            fen = moveAIPiece(sourceX, sourceY, x, y);
+            
+            changeCurrentTeam();
+        
+        reRenderBoard();
+    } catch (error) {
+        console.error("Error:", error);
+    }
 }
 
 function checkPossiblePlays() {
@@ -337,16 +429,112 @@ function checkValidCapture(x, y) {
     else return false;
 }
 
+function generateFEN(board) {
+    let fenString = '';
+    let activeColor = ''; // Assume White is the active color by default
+
+  
+    // Loop through rows
+    for (let y = 0; y < 8; y++) {
+      let emptyCount = 0;
+  
+      // Loop through columns
+      for (let x = 0; x < 8; x++) {
+        const tile = board.tiles[y][x];
+  
+        if (tile.pieceType != EMPTY) {
+
+          if (emptyCount > 0) {
+            fenString += emptyCount;
+            emptyCount = 0;
+          }
+
+          let pieceChar = tile.pieceType;
+          if (pieceChar === PAWN){
+            pieceChar = 'p';
+          } else if (pieceChar === KNIGHT){
+            pieceChar = 'n';
+            } else if (pieceChar === BISHOP){
+            pieceChar = 'b';
+            } else if (pieceChar === ROOK){
+            pieceChar = 'r';
+            } else if (pieceChar === QUEEN){
+            pieceChar = 'q';
+            } else if (pieceChar === KING){
+            pieceChar = 'k';
+            }
+          
+            if (tile.team === WHITE) {
+              pieceChar = pieceChar.toUpperCase();
+            }
+
+          fenString += pieceChar;
+
+        } else {
+
+          emptyCount++;
+
+        }
+      }
+  
+      if (emptyCount > 0) {
+        fenString += emptyCount;
+      }
+  
+      if (y < 7) {
+        fenString += '/';
+      }
+    }
+    console.log(currentTeam);
+
+    if (currentTeam === WHITE) {
+        console.log('White is the active color');
+        activeColor = 'b';
+      } else {
+        console.log('black is the active color');
+
+        activeColor = 'w'; 
+      }
+
+    // Add active color component
+    fenString += ' ' + activeColor;
+  
+    fenString += ' - -';
+  
+    return fenString;
+  }
+
 function moveSelectedPiece(x, y) {
     board.tiles[y][x].pieceType = board.tiles[curY][curX].pieceType;
     board.tiles[y][x].team = board.tiles[curY][curX].team;
-
     board.tiles[curY][curX].pieceType = EMPTY;
     board.tiles[curY][curX].team = EMPTY;
+
+    const fenPosition = generateFEN(board,x,y);
+    console.log(fenPosition); // Output: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
     curX = -1;
     curY = -1;
     board.resetValidMoves();
+    return fenPosition;
+}
+
+async function moveAIPiece(sourceX, sourceY, x, y) {
+    board.tiles[y][x].pieceType = board.tiles[sourceY][sourceX].pieceType;
+    board.tiles[y][x].team = board.tiles[sourceY][sourceX].team;
+    board.tiles[sourceY][sourceX].pieceType = EMPTY;
+    board.tiles[sourceY][sourceX].team = EMPTY;
+
+    const fenPosition = generateFEN(board,x,y);
+    console.log(fenPosition); // Output: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+
+    drawBoard();
+    drawPieces();
+
+    curX = -1;
+    curY = -1;
+    board.resetValidMoves();
+    return fenPosition;
 }
 
 function changeCurrentTeam() {
@@ -423,15 +611,6 @@ function drawPieces() {
         for (let j = 0; j < BOARD_WIDTH; j++) {
             if (board.tiles[i][j].team === EMPTY) continue;
 
-            // if (board.tiles[i][j].team === WHITE) {
-            //     chess2dContext.fillStyle = "#FFffff";
-            // } else {
-            //     chess2dContext.fillStyle = "#000000";
-            // } 
-            // chess2dContext.font = "38px Arial";
-            // let pieceType = board.tiles[i][j].pieceType;
-            // chess2dContext.fillText(piecesCharacters[pieceType], TILE_SIZE*(j+1/8), TILE_SIZE*(i+4/5));
-
             let pieceType = board.tiles[i][j].pieceType;
 
             if (board.tiles[i][j].team === WHITE) {
@@ -478,41 +657,6 @@ function getOppositeTeam(team) {
     else return EMPTY;
 }
 
-// player vs computer
-async function getComputerMove(chessboardState) {
-    try {
-        const response = await openai.Completions.create({
-            model: 'gpt-3.5-turbo', // choose the appropriate model
-            prompt: `Given the current chessboard state: ${chessboardState}, what's the best move for Black?`,
-            max_tokens: 1
-        });
-
-        const computerMove = response.data.choices[0].text.trim();
-        return computerMove;
-    } catch (error) {
-        console.error('Error fetching computer move:', error);
-        return null;
-    }
-}
-
-function makeComputerMove() {
-    // get the current state of the chessboard
-    const chessboardState = getCurrentChessboardState();
-
-    // get the computer's move
-    getComputerMove(chessboardState)
-        .then(computerMove => {
-            // apply the computer's move to the chessboard
-            applyMoveToChessboard(computerMove);
-        })
-        .catch(error => {
-            console.error('Error making computer move:', error);
-        });
-}
-// update chessboard state
-// redraw chessboard 
-// update turn indicator
-// update piece images (captured, etc)
 
 class Board {
     constructor() {
