@@ -13,6 +13,9 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part C.
 
+dotenv.config();
+const LICHESS_TOKEN = "lip_LSo2yaUJwEdG08e9roQ5"
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -174,7 +177,6 @@ app.get('/aiResponse', async (req, res) => {
         const response = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
         
         const data = await response.json();
-        
         const move = data.move;
  
         res.json({ move });
@@ -270,6 +272,24 @@ async function postChessApi(data = {}) {
     }
 }
 */
+
+
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.query.fen;
+ 
+        const response = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
+        
+        const data = await response.json();
+        
+        const move = data.move;
+ 
+        res.json({ move });
+    } catch (error) {
+        console.error("Error fetching computer move:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+ }); 
 
 // Render endpoint for the home page
 app.get('/home', (req, res) => {

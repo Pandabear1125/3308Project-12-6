@@ -260,6 +260,7 @@ async function handleComputerMove() {
         const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`);
 
         const data = await response.json();
+        
         const aiMove = data.move;
     
         // example: should be d7d5
