@@ -1,0 +1,128 @@
+<link href="../../css/variousRules.css" rel="stylesheet">
+<div class="container-fluid text-center"> 
+    <div class="row content">     
+            {{!-- TODO: 
+                1. Let the user update their profile picture and bio --}}
+            <div class="col-sm-3 sidenav">
+                <div class="container-fluid text-center">
+                    <img loading="lazy" alt="There was an error in displaying your profile picture" src={{pic}}  width="150" height="150" class="img-circle"/> <!--TODO: set JS index to do the SQL query --> 
+                    <h2>{{name}}</h2>
+                    <p>{{bio}}</p>
+                    <input type="button" onclick="showProfileForm()" value="Update Profile">
+               </div>
+               <div class="change-form-div" id="profile-form-container">
+                  <form action="/profile" method=POST class="change-form">
+                    <div class="picture">
+                      <label for="userPicture">Enter a link to your profile picture: </label>
+                      <input type="text" name="userPicture" id="userPicture" value={{pic}} required />
+                    </div>
+                    <div class="bio">
+                      <label for="userBio">Enter your biography: </label>
+                      <input type="text" name="userBio" id="userBio" value='{{bio}}' required /> 
+                    </div>
+                    <div class="update-button">
+                      <button type="submit">update</button>
+                    </div>
+                  </form>
+               </div>
+            </div>
+            <div class="col-sm-9 sidenav">
+              <!--The Rest should go here of the drop down bars-->
+              <div class="accordion accordion-flush" id="accordionPanelsStayOpenExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                      Simple Stats
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                    <div class="accordion-body tableRules">
+                      <table>
+                            <tbody>
+                                <tr>
+                                <td>Games Played:</td>
+                                <td>{{total}}</td>
+                                </tr>
+                                <tr>
+                                <td>Total Wins:</td>
+                                <td>{{totalWins}}</td>
+                                </tr>
+                                <tr>
+                                <td>Total Losses:</td>
+                                <td>{{totalLosses}}</td>
+                                </tr>
+                                <tr>
+                                <td>Win to Loss Ratio:</td>
+                                <td>{{winToLoss}}</td>
+                                </tr>
+                                <tr>
+                                <td>Time When Last Game Was Played</td>
+                                <td>{{lastPlay}}</td> {{!-- 1/1/1970 00:00:00 --}}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                      Game History
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+                    <div class="accordion-body tableRules">
+                       <table>
+                        <tbody>
+                            <tr>
+                            <td>Game1</td>
+                            <td>Game1</td>
+                            <td>Game2</td>
+                            </tr>
+                            <tr>
+                            <td>Game4</td>
+                            <td>Game5</td>
+                            <td>Game6</td>
+                            </tr>
+                            <tr>
+                            <td>Game7</td>
+                            <td>Game8</td>
+                            <td>Game9</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+                {{!-- <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                      Accordion Item #3
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+                    <div class="accordion-body">
+                      <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    </div>
+                  </div>
+                </div> --}}
+              </div>
+
+    
+            </div>
+        
+    </div>
+</div>
+
+<script> 
+  // When the user clicks on the update profile button, open the popup 
+    function showProfileForm() {   
+      var popup = document.getElementById("profile-form-container");   
+      //popup.classList.toggle("show");
+      if (popup.style.display === "inline-block") {
+        popup.style.display = "none";
+      } else {
+        popup.style.display = "inline-block";
+      };
+    }
+ </script>
