@@ -184,41 +184,92 @@ app.get('/aiResponse', async (req, res) => {
     }
  }); 
 
-// app.get('/aiMove', async (req, res) => {
-//     try {
-//         const fen = req.query.fen;
-//         // const fen = "8/1P1R4/n1r2B2/3Pp3/1k4P1/6K1/Bppr1P2/2q5 w - - 0 1";
+/* tried using Lichess API
+app.post('/playAgainstBot', async (req, res) => {
+    try {
+        // Extract user move from request body
+        const { userMove } = req.body;
         
-//         const data = await postChessApi({ fen });
+        // Make a request to the Lichess Bot API to calculate the bot's move based on the user's move
+        const botMove = await calculateBotMove(userMove);
+        // Send the bot's move back to the frontend
+        res.json({ success: true, botMove });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+});
 
-//         // if chess-api.com is not working, redirect to "Player vs Player"
-//         if (!data || !data.move) {
-//             console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
-//             return res.redirect('/game?game-type=standard&play-type=player');
-//         }
+async function calculateBotMove(userMove) {
+    const url = `https://lichess.org/api/bot/game/${userMove.gameId}/move/${userMove.move}`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ${LICHESS_TOKEN}',
+            'Content-Type': 'application/json'
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Failed to calculate bot move');
+    }
+    const data = await response.json();
+    return data.botMove;
+}
 
-//         const move = data.move;
+app.post('/makeBotMove', async (req, res) => {
+    try {
+        const { gameId, move } = req.body;
+        // Make a request to the Lichess Bot API
+        const url = `https://lichess.org/api/bot/game/${gameId}/move/${move}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${LICHESS_TOKEN}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        // Check if the request was successful
+        if (!response.ok) {
+            throw new Error('Failed to make bot move');
+        }
+        // Parse the response and send it back
+        const data = await response.json();
+        res.json({ success: true, data });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+});
+*/
+
+/* chess-api server down and stopped working
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.body.fen;
         
-//         res.json({ data });
-//     } catch (error) {
-//         console.error("Error:", error);
-//     }
-// });
-
-// async function postChessApi(data = {}) {
-//     try {
-//         const response = await fetch("https://chess-api.com/v1", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify(data),
-//         });
-//         return response.json();
-//     } catch (error) {
-//         throw new Error("error");
-//     }
-// }
+        const data = await postChessApi({ fen });
+        const move = data.move;
+        
+        return res.json({ move });
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
+async function postChessApi(data = {}) {
+    try {
+        const response = await fetch("https://chess-api.com/v1", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    } catch (error) {
+        throw new Error("error");
+    }
+}
+*/
 
 // Render endpoint for the home page
 app.get('/home', (req, res) => {
