@@ -1,45 +1,30 @@
 // JavaScript code for the timer
-let min1 = 10;
 let sec1 = 0;
-let min2 = 10;
 let sec2 = 0;
 let timerInterval1;
 let timerInterval2;
 let currentPlayer = 1;
-var gt = 'standard';
+var gameType = 'standard';
 
 function resetTimer() {
     clearInterval(timerInterval1); 
     clearInterval(timerInterval2); 
-    var minutes;
     sec1 = 0;
     sec2 = 0;
-    switch (gt) {
-        case 'standard':
-            minutes = 10;
-            min2 = 10;
-            min1 = 10;
-            break;
-        case 'blitz':   
-            minutes = 5;
-            min2 = 5;
-            min1 = 5;  
-            break;
-        case 'bullet':
-            minutes = 3;
-            min2 = 3;
-            min1 = 3;
-            break;
-        default:
-            minutes = 10; // Default to standard if game type is not recognized
-            min2 = 10;
-            min1 = 10;
-    }
+    const intitialTime = getInitialTimeForGameType(gameType); 
+    min1 = intitialTime;
+    min2 = intitialTime;
+
     // Set the initial timer values
-    document.getElementById('min1').textContent = minutes;
-    document.getElementById('min2').textContent = minutes;
-    document.getElementById('sec1').innerText = "00";
-    document.getElementById('sec2').innerText = "00";
+    updateTimerDisplay('player1', min1, sec1);
+    updateTimerDisplay('player2', min2, sec2); 
+}
+function updateTimerDisplay(player, minutes, seconds) {
+    const minutesElement = document.getElementById(`min${player === 'player1' ? '1' : '2'}`); 
+    const secondsElement = document.getElementById(`sec${player === 'player1' ? '1' : '2'}`);
+
+    minutesElement.textContent = padZero(minutes);
+    secondsElement.textContent = padZero(seconds);
 }
 
 function startTimer1() {
@@ -66,8 +51,7 @@ function updateTimer1() {
     min1--;
   }
 
-  document.getElementById('min1').innerText = padZero(min1);
-  document.getElementById('sec1').innerText = padZero(sec1);
+  updateTimerDisplay('player1', min1, sec1); 
 }
 
 function updateTimer2() {
@@ -82,8 +66,7 @@ function updateTimer2() {
         min2--;
     }
 
-    document.getElementById('min2').innerText = padZero(min2);
-    document.getElementById('sec2').innerText = padZero(sec2); 
+    updateTimerDisplay('player2', min2, sec2);  
 }
 
 function padZero(num) {
@@ -103,7 +86,36 @@ function switchPlayer() {
 
 }
 
+function getInitialTimeForGameType(gameType) {
+    switch (gameType) {
+        case 'blitz':
+          return 5; // 5 minutes
+        case 'bullet':
+          return 3; // 3 minutes
+        case 'standard':
+          return 10; // 10 minutes
+        default:
+          return 10; // Default to 10 minutes
+    }
+}
+
 function updateTimerBasedOnGameType(gameType) {
-    gt = gameType;
+   this.gameType = gameType;
+   resetTimer();
 
 }
+
+window.addEventListener('load', function() {
+    resetTimer();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const gameType = getGameTypeFromQuery();
+    updateTimerBasedOnGameType(gameType);
+  });
+  
+  function getGameTypeFromQuery() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameType = urlParams.get('game-type');
+    return gameType || 'standard'; // Return 'standard' if game-type is not present in the query
+  }
