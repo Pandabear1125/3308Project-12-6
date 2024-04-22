@@ -83,7 +83,7 @@ app.post('/playAgainstBot', async (req, res) => {
     try {
         // Extract user move from request body
         const { userMove } = req.body;
-
+        
         // Make a request to the Lichess Bot API to calculate the bot's move based on the user's move
         const botMove = await calculateBotMove(userMove);
 
