@@ -13,6 +13,9 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part C.
 
+dotenv.config();
+const LICHESS_TOKEN = "lip_LSo2yaUJwEdG08e9roQ5"
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -76,34 +79,98 @@ app.use(express.static(__dirname + '/'));
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
-app.get('/aiResponse', async (req, res) => {
+app.post('/playAgainstBot', async (req, res) => {
     try {
-        const fen = req.query.fen;
-        
-        const data = await postChessApi({ fen });
+        // Extract user move from request body
+        const { userMove } = req.body;
 
-        const move = data.move;
-        
-        return res.json({ move });
+        // Make a request to the Lichess Bot API to calculate the bot's move based on the user's move
+        const botMove = await calculateBotMove(userMove);
+
+        // Send the bot's move back to the frontend
+        res.json({ success: true, botMove });
     } catch (error) {
-        console.error("Error:", error);
+        console.error('Error:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 });
 
-async function postChessApi(data = {}) {
-    try {
-        const response = await fetch("https://chess-api.com/v1", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data),
-        });
-        return response.json();
-    } catch (error) {
-        throw new Error("error");
+// Function to calculate bot's move using the Lichess Bot API
+async function calculateBotMove(userMove) {
+    const url = `https://lichess.org/api/bot/game/${userMove.gameId}/move/${userMove.move}`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ${LICHESS_TOKEN}',
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to calculate bot move');
     }
+
+    const data = await response.json();
+    return data.botMove;
 }
+
+// app.post('/makeBotMove', async (req, res) => {
+//     try {
+//         const { gameId, move } = req.body;
+
+//         // Make a request to the Lichess Bot API
+//         const url = `https://lichess.org/api/bot/game/${gameId}/move/${move}`;
+//         const response = await fetch(url, {
+//             method: 'POST',
+//             headers: {
+//                 'Authorization': `Bearer ${LICHESS_TOKEN}`,
+//                 'Content-Type': 'application/json'
+//             }
+//         });
+
+//         // Check if the request was successful
+//         if (!response.ok) {
+//             throw new Error('Failed to make bot move');
+//         }
+
+//         // Parse the response and send it back
+//         const data = await response.json();
+//         res.json({ success: true, data });
+//     } catch (error) {
+//         console.error('Error:', error);
+//         res.status(500).json({ success: false, error: 'Internal Server Error' });
+//     }
+// });
+
+
+// app.get('/aiResponse', async (req, res) => {
+//     try {
+//         const fen = req.body.fen;
+        
+//         const data = await postChessApi({ fen });
+
+//         const move = data.move;
+        
+//         return res.json({ move });
+//     } catch (error) {
+//         console.error("Error:", error);
+//     }
+// });
+
+// async function postChessApi(data = {}) {
+//     try {
+//         const response = await fetch("https://chess-api.com/v1", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify(data),
+//         });
+//         return response.json();
+//     } catch (error) {
+//         throw new Error("error");
+//     }
+// }
 
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
