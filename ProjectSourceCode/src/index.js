@@ -79,6 +79,8 @@ app.use(express.static(__dirname + '/'));
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
+/* tried using Lichess API
+
 app.post('/playAgainstBot', async (req, res) => {
     try {
         // Extract user move from request body
@@ -114,63 +116,66 @@ async function calculateBotMove(userMove) {
     return data.botMove;
 }
 
-// app.post('/makeBotMove', async (req, res) => {
-//     try {
-//         const { gameId, move } = req.body;
+app.post('/makeBotMove', async (req, res) => {
+    try {
+        const { gameId, move } = req.body;
 
-//         // Make a request to the Lichess Bot API
-//         const url = `https://lichess.org/api/bot/game/${gameId}/move/${move}`;
-//         const response = await fetch(url, {
-//             method: 'POST',
-//             headers: {
-//                 'Authorization': `Bearer ${LICHESS_TOKEN}`,
-//                 'Content-Type': 'application/json'
-//             }
-//         });
+        // Make a request to the Lichess Bot API
+        const url = `https://lichess.org/api/bot/game/${gameId}/move/${move}`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${LICHESS_TOKEN}`,
+                'Content-Type': 'application/json'
+            }
+        });
 
-//         // Check if the request was successful
-//         if (!response.ok) {
-//             throw new Error('Failed to make bot move');
-//         }
+        // Check if the request was successful
+        if (!response.ok) {
+            throw new Error('Failed to make bot move');
+        }
 
-//         // Parse the response and send it back
-//         const data = await response.json();
-//         res.json({ success: true, data });
-//     } catch (error) {
-//         console.error('Error:', error);
-//         res.status(500).json({ success: false, error: 'Internal Server Error' });
-//     }
-// });
+        // Parse the response and send it back
+        const data = await response.json();
+        res.json({ success: true, data });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+});
+*/
 
+/* chess-api server down and stopped working
 
-// app.get('/aiResponse', async (req, res) => {
-//     try {
-//         const fen = req.body.fen;
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.body.fen;
         
-//         const data = await postChessApi({ fen });
+        const data = await postChessApi({ fen });
 
-//         const move = data.move;
+        const move = data.move;
         
-//         return res.json({ move });
-//     } catch (error) {
-//         console.error("Error:", error);
-//     }
-// });
+        return res.json({ move });
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
 
-// async function postChessApi(data = {}) {
-//     try {
-//         const response = await fetch("https://chess-api.com/v1", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify(data),
-//         });
-//         return response.json();
-//     } catch (error) {
-//         throw new Error("error");
-//     }
-// }
+async function postChessApi(data = {}) {
+    try {
+        const response = await fetch("https://chess-api.com/v1", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    } catch (error) {
+        throw new Error("error");
+    }
+}
+*/
 
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
@@ -262,7 +267,30 @@ const auth = (req, res, next) => {
 };
 // Authentication Required
 app.use(auth);
-  
+
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.query.fen;
+ 
+ 
+        const data = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
+ 
+ 
+        // const aiMove = response.data;
+ 
+ 
+        // const moveIndex = aiMove.indexOf(':');
+        // const move = aiMove.substring(moveIndex + 1).trim();
+        const move = data.move;
+ 
+ 
+        res.json({ move });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+ }); 
+
 // Render endpoint for the home page
 app.get('/home', (req, res) => {
     res.render('pages/home');

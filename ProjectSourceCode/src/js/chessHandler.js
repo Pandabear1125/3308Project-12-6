@@ -246,26 +246,26 @@ async function handleComputerMove() {
         console.log("fen:", fen);
 
         // if chess-api.com is not working, redirect to "Player vs Player"
-        const timeoutPromise = new Promise((resolve, reject) => {
-            setTimeout(() => {
-                reject(new Error('Request timed out'));
-            }, 2500);
-        });
+        // const timeoutPromise = new Promise((resolve, reject) => {
+        //     setTimeout(() => {
+        //         reject(new Error('Request timed out'));
+        //     }, 2500);
+        // });
 
-        timeoutPromise.catch((error) => {
-            console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
-            window.location.href = '/game?game-type=standard&play-type=player';
-        });
+        // timeoutPromise.catch((error) => {
+        //     console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
+        //     window.location.href = '/game?game-type=standard&play-type=player';
+        // });
 
         const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+           method: 'GET',
+           headers: {
+               'Content-Type': 'application/json'
+           }
+       });
 
-        const data = await response.json();
-        const aiMove = data.move;
+       const data = await response.json();
+       const aiMove = data.move;
     
         // example: should be d7d5
         console.log('AI Move:', aiMove); 
