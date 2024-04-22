@@ -257,15 +257,11 @@ async function handleComputerMove() {
         //     window.location.href = '/game?game-type=standard&play-type=player';
         // });
 
-        const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`, {
-           method: 'GET',
-           headers: {
-               'Content-Type': 'application/json'
-           }
-       });
+        const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`);
 
-       const data = await response.json();
-       const aiMove = data.move;
+        const data = await response.json();
+        
+        const aiMove = data.move;
     
         // example: should be d7d5
         console.log('AI Move:', aiMove); 
