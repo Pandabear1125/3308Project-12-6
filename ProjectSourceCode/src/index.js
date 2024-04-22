@@ -76,6 +76,22 @@ app.use(express.static(__dirname + '/'));
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.query.fen;
+ 
+        const response = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
+        
+        const data = await response.json();
+        const move = data.move;
+ 
+        res.json({ move });
+    } catch (error) {
+        console.error("Error fetching computer move:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}); 
+
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
     res.json({ status: 'success', message: 'Welcome!' });
@@ -167,22 +183,7 @@ const auth = (req, res, next) => {
 // Authentication Required
 app.use(auth);
 
-app.get('/aiResponse', async (req, res) => {
-    try {
-        const fen = req.query.fen;
- 
-        const response = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
-        
-        const data = await response.json();
-        
-        const move = data.move;
- 
-        res.json({ move });
-    } catch (error) {
-        console.error("Error fetching computer move:", error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
- }); 
+
 
 /* tried using Lichess API
 app.post('/playAgainstBot', async (req, res) => {
