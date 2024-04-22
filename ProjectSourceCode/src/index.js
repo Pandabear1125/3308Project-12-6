@@ -170,21 +170,19 @@ app.use(auth);
 app.get('/aiResponse', async (req, res) => {
     try {
         const fen = req.query.fen;
-
-        const data = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
-
-        // const aiMove = response.data;
-
-        // const moveIndex = aiMove.indexOf(':');
-        // const move = aiMove.substring(moveIndex + 1).trim();
+ 
+        const response = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
+        
+        const data = await response.json();
+        
         const move = data.move;
-
+ 
         res.json({ move });
     } catch (error) {
-        console.error("Error:", error);
+        console.error("Error fetching computer move:", error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-});
+ }); 
 
 // app.get('/aiMove', async (req, res) => {
 //     try {
