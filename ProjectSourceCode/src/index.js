@@ -177,7 +177,6 @@ app.get('/aiResponse', async (req, res) => {
         const response = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
         
         const data = await response.json();
-        
         const move = data.move;
  
         res.json({ move });
