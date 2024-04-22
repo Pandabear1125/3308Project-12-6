@@ -76,41 +76,6 @@ app.use(express.static(__dirname + '/'));
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
-app.get('/aiResponse', async (req, res) => {
-    try {
-        const fen = req.query.fen;
-        
-        const data = await postChessApi({ fen });
-
-        // if chess-api.com is not working, redirect to "Player vs Player"
-        if (!data || !data.move) {
-            console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
-            return res.redirect('/game?game-type=standard&play-type=player');
-        }
-
-        const move = data.move;
-        
-        return res.json({ move });
-    } catch (error) {
-        console.error("Error:", error);
-    }
-});
-
-async function postChessApi(data = {}) {
-    try {
-        const response = await fetch("https://chess-api.com/v1", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data),
-        });
-        return response.json();
-    } catch (error) {
-        throw new Error("error");
-    }
-}
-
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
     res.json({ status: 'success', message: 'Welcome!' });
@@ -201,7 +166,62 @@ const auth = (req, res, next) => {
 };
 // Authentication Required
 app.use(auth);
-  
+
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.query.fen;
+
+        const data = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
+
+        // const aiMove = response.data;
+
+        // const moveIndex = aiMove.indexOf(':');
+        // const move = aiMove.substring(moveIndex + 1).trim();
+        const move = data.move;
+
+        res.json({ move });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// app.get('/aiMove', async (req, res) => {
+//     try {
+//         const fen = req.query.fen;
+//         // const fen = "8/1P1R4/n1r2B2/3Pp3/1k4P1/6K1/Bppr1P2/2q5 w - - 0 1";
+        
+//         const data = await postChessApi({ fen });
+
+//         // if chess-api.com is not working, redirect to "Player vs Player"
+//         if (!data || !data.move) {
+//             console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
+//             return res.redirect('/game?game-type=standard&play-type=player');
+//         }
+
+//         const move = data.move;
+        
+//         res.json({ data });
+//     } catch (error) {
+//         console.error("Error:", error);
+//     }
+// });
+
+// async function postChessApi(data = {}) {
+//     try {
+//         const response = await fetch("https://chess-api.com/v1", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify(data),
+//         });
+//         return response.json();
+//     } catch (error) {
+//         throw new Error("error");
+//     }
+// }
+
 // Render endpoint for the home page
 app.get('/home', (req, res) => {
     res.render('pages/home');
