@@ -79,104 +79,6 @@ app.use(express.static(__dirname + '/'));
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
-/* tried using Lichess API
-
-app.post('/playAgainstBot', async (req, res) => {
-    try {
-        // Extract user move from request body
-        const { userMove } = req.body;
-        
-        // Make a request to the Lichess Bot API to calculate the bot's move based on the user's move
-        const botMove = await calculateBotMove(userMove);
-
-        // Send the bot's move back to the frontend
-        res.json({ success: true, botMove });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ success: false, error: 'Internal Server Error' });
-    }
-});
-
-// Function to calculate bot's move using the Lichess Bot API
-async function calculateBotMove(userMove) {
-    const url = `https://lichess.org/api/bot/game/${userMove.gameId}/move/${userMove.move}`;
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Authorization': 'Bearer ${LICHESS_TOKEN}',
-            'Content-Type': 'application/json'
-        }
-    });
-
-    if (!response.ok) {
-        throw new Error('Failed to calculate bot move');
-    }
-
-    const data = await response.json();
-    return data.botMove;
-}
-
-app.post('/makeBotMove', async (req, res) => {
-    try {
-        const { gameId, move } = req.body;
-
-        // Make a request to the Lichess Bot API
-        const url = `https://lichess.org/api/bot/game/${gameId}/move/${move}`;
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${LICHESS_TOKEN}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        // Check if the request was successful
-        if (!response.ok) {
-            throw new Error('Failed to make bot move');
-        }
-
-        // Parse the response and send it back
-        const data = await response.json();
-        res.json({ success: true, data });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ success: false, error: 'Internal Server Error' });
-    }
-});
-*/
-
-/* chess-api server down and stopped working
-
-app.get('/aiResponse', async (req, res) => {
-    try {
-        const fen = req.body.fen;
-        
-        const data = await postChessApi({ fen });
-
-        const move = data.move;
-        
-        return res.json({ move });
-    } catch (error) {
-        console.error("Error:", error);
-    }
-});
-
-async function postChessApi(data = {}) {
-    try {
-        const response = await fetch("https://chess-api.com/v1", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data),
-        });
-        return response.json();
-    } catch (error) {
-        throw new Error("error");
-    }
-}
-*/
-
 // The default route, used for testing
 app.get('/welcome', (req, res) => {
     res.json({ status: 'success', message: 'Welcome!' });
@@ -285,6 +187,60 @@ app.get('/aiResponse', async (req, res) => {
     }
  }); 
 
+// app.get('/aiMove', async (req, res) => {
+//     try {
+//         const fen = req.query.fen;
+//         // const fen = "8/1P1R4/n1r2B2/3Pp3/1k4P1/6K1/Bppr1P2/2q5 w - - 0 1";
+        
+//         const data = await postChessApi({ fen });
+
+//         // if chess-api.com is not working, redirect to "Player vs Player"
+//         if (!data || !data.move) {
+//             console.log("Chess API is not responding. Redircting to 'Player vs Player' mode...")
+//             return res.redirect('/game?game-type=standard&play-type=player');
+//         }
+
+//         const move = data.move;
+        
+//         res.json({ data });
+//     } catch (error) {
+//         console.error("Error:", error);
+//     }
+// });
+
+// async function postChessApi(data = {}) {
+//     try {
+//         const response = await fetch("https://chess-api.com/v1", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify(data),
+//         });
+//         return response.json();
+//     } catch (error) {
+//         throw new Error("error");
+//     }
+// }
+
+
+app.get('/aiResponse', async (req, res) => {
+    try {
+        const fen = req.query.fen;
+ 
+        const response = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
+        
+        const data = await response.json();
+        
+        const move = data.move;
+ 
+        res.json({ move });
+    } catch (error) {
+        console.error("Error fetching computer move:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+ }); 
+
 // Render endpoint for the home page
 app.get('/home', (req, res) => {
     res.render('pages/home');
@@ -304,6 +260,52 @@ app.get('/game', (req, res) => {
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.render('pages/logout');
+});
+
+app.get('/profile', async (req, res) => {
+    const find_games = "SELECT games.date FROM users JOIN users_to_games ON users.user_id = users_to_games.user_id JOIN games ON users_to_games.game_id = games.game_id WHERE users.user_id = $1 GROUP BY games.game_id ORDER BY games.date DESC;";
+    db.any(find_games, [req.session.user.user_id ])
+        .then(async function (data) {
+            var user = data[0];
+            if(req.session.user.bio == ''){
+                var newBio = "It appears that you do not have a bio"
+            }
+            else{
+                var newBio = req.session.user.bio
+            }
+            console.log(data);
+            res.render('pages/profile', {
+                name:req.session.user.username,
+                bio: newBio,
+                pic: req.session.user.picurl,
+                total: req.session.user.games_won + req.session.user.games_lost,
+                totalWins: req.session.user.games_won,
+                totalLosses: req.session.user.games_lost,
+                winToLosses: req.session.user.games_won / req.session.user.games_lost,
+                lastPlay: user
+            });//TODO: Maybe create another query to get the games using for each in handelbars
+        })
+        .catch(function (err) {
+            console.log(err, req.session.user);//TODO: Get rid of this before final submit because it could hold sensitive data
+            res.render('pages/home');
+        })
+    
+});
+
+app.post('/profile', async (req, res) => {
+    var userId = req.session.user.user_id;
+    const update_query = `UPDATE users SET picurl = $1, bio = $2  WHERE user_id = '${userId}';`;
+
+    db.any(update_query, [req.body.userPicture, req.body.userBio])
+        .then(function () {
+            req.session.user.picurl = req.body.userPicture,
+            req.session.user.bio = req.body.userBio;
+            res.status(200).render('pages/profile', {name:req.session.user.username, bio: req.session.user.bio, pic: req.session.user.picurl});
+        })
+        .catch(function (err) {
+            console.log(err);
+            res.status(400).redirect("/home");
+        })
 });
 
 

@@ -13,6 +13,7 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL,
     password VARCHAR(200) NOT NULL,
     bio VARCHAR(250) DEFAULT '',
+    picurl VARCHAR(250) DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/7/7f/Royal_crown_of_Sweden.jpg',
     earned_points INT DEFAULT 0,
     current_points INT DEFAULT 0,
     games_won INT DEFAULT 0,
