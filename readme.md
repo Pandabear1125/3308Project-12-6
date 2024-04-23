@@ -5,7 +5,7 @@ Isabella Bates, Cole Downs, Emma Kalikstein,
 Jackson Stepka, Paul Tracy, Mathias Labuszewski
 
 ## Project Description
-We want to create a chess-playing website with multiple parts: a daily chess puzzle, playing against chess AIs, playing against another user. 
+We want to create a chess-playing website where users: can play against another person, can player against a chess AI, and customize their profile page. 
 
 ## Vision Statement: 
 “Bringing creativity and style to chess”
