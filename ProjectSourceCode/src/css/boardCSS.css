@@ -1,8 +1,8 @@
 #chessCanvas {
     display: block;
     margin: auto;
-    width: 800px;
-    height: 800px;
+    width: 480px;
+    height: 480px;
 }
 input[type="range"] {
     width:100px;

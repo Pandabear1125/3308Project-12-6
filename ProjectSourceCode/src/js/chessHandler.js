@@ -2,7 +2,7 @@
 
 const BOARD_WIDTH = 8;  //width = 50*8 = 400 pixels
 const BOARD_HEIGHT = 8;
-const TILE_SIZE = 100; //in pixels 400/8 = 50 pixels 800/8 = 100 pixels
+const TILE_SIZE = 60; //in pixels 400/8 = 50 pixels 800/8 = 100 pixels 60*8 = 480 pixels
 
 let WHITE_TILE_COLOR = "rgb(240, 217, 181)";
 let BLACK_TILE_COLOR = "rgb(181, 136, 99 )";
@@ -236,7 +236,7 @@ function parseMove(moveString) {
     const destination = moveString.slice(2, 4);
 
     return [source, destination];
-    
+
 }
 
 
