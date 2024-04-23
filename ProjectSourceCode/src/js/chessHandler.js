@@ -245,7 +245,7 @@ async function handleComputerMove() {
     try {
         console.log('called handleComputerMove');
         // example: fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -"; 
-        console.log("computer fen:", fen);
+        console.log("encoded fen:", encodeURIComponent(fen));
 
         // if chess-api.com is not working, redirect to "Player vs Player"
         // const timeoutPromise = new Promise((resolve, reject) => {
@@ -261,16 +261,19 @@ async function handleComputerMove() {
 
         let response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`);
 
-        let json = await response.json();
-        let move = json.data.moves[0];
-        let aiMove = move.uci;
-    
-        // example: should be d7d5
-        console.log('response json:', json); 
-        console.log('move:', move); 
-        console.log('AI move:', aiMove); 
+        let data = await response.json();
+        console.log('data:', data);
 
-        const [source, destination] = parseMove(aiMove);
+        let move = data.move;
+        console.log('move:', move);
+
+        // TESTING
+        // example: should be d7d5
+        // console.log('response json:', data); 
+
+        // console.log('AI move:', aiMove); 
+
+        const [source, destination] = parseMove(move);
 
         // update the board state to reflect the AI's move
         const sourceX = source.charCodeAt(0) - 97; // convert file from letter to index
@@ -278,6 +281,7 @@ async function handleComputerMove() {
         const x = destination.charCodeAt(0) - 97;
         const y = 8 - parseInt(destination[1]);
 
+        // TESTING
         // console.log('source x:', sourceX);
         // console.log('source y:', sourceY);
         // console.log('x:', x);

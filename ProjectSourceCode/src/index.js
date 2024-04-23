@@ -80,12 +80,21 @@ app.get('/aiResponse', async (req, res) => {
     try {
         const fen = req.query.fen;
  
-        const response = await fetch(`https://www.chessdb.cn/cdb.php?action=queryall&board=${fen}&json=1`);
-        
+        const response = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
         const data = await response.json();
 
- 
-        res.json({data});
+        if ( data.status == "nobestmove" ) {
+            const responseAll = await fetch(`https://www.chessdb.cn/cdb.php?action=queryall&board=${fen}&json=1`);
+            const dataAll = await responseAll.json();
+
+            const move = dataAll.moves[0].uci;
+            res.json({ move });
+        }
+        else {
+            const move = data.move;
+            res.json({ move });
+        }
+        
     } catch (error) {
         console.error("Error fetching computer move:", error);
         res.status(500).json({ error: 'Internal Server Error' });
