@@ -170,7 +170,9 @@ function onLeave(){
 
 function onClick(event) {
     if (playType === PLAYER || (playType === COMPUTER && currentTeam === WHITE) ){
-        console.log(playType)
+        console.log(playType);
+        console.log(currentTeam);
+
         if (GAME_STARTED === false) {
             return;
         }
@@ -214,7 +216,7 @@ function onClick(event) {
             changeCurrentTeam();
             reRenderBoard();
 
-            if (playType === "computer" && currentTeam === BLACK) {
+            if (playType === COMPUTER && currentTeam === BLACK) {
                 // console.log(playType)
                 handleComputerMove();
             }
@@ -243,7 +245,7 @@ async function handleComputerMove() {
     try {
         console.log('called handleComputerMove');
         // example: fen = "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - -"; 
-        console.log("fen:", fen);
+        console.log("computer fen:", fen);
 
         // if chess-api.com is not working, redirect to "Player vs Player"
         // const timeoutPromise = new Promise((resolve, reject) => {
@@ -264,9 +266,9 @@ async function handleComputerMove() {
         let aiMove = move.uci;
     
         // example: should be d7d5
-        console.log('Response:', json); 
-        console.log('Response:', move); 
-        console.log('Move piec:', aiMove); 
+        console.log('response json:', json); 
+        console.log('move:', move); 
+        console.log('AI move:', aiMove); 
 
         const [source, destination] = parseMove(aiMove);
 
@@ -280,7 +282,6 @@ async function handleComputerMove() {
         // console.log('source y:', sourceY);
         // console.log('x:', x);
         // console.log('y:', y);
-
 
         if (board.tiles[y][x].pieceType === KING) {
             if (currentTeam === WHITE) {
