@@ -80,12 +80,12 @@ app.get('/aiResponse', async (req, res) => {
     try {
         const fen = req.query.fen;
  
-        const response = await fetch(`https://www.chessdb.cn/cdb.php?action=querybest&board=${fen}&json=1`);
+        const response = await fetch(`https://www.chessdb.cn/cdb.php?action=queryall&board=${fen}&json=1`);
         
         const data = await response.json();
-        const move = data.move;
+
  
-        res.json({ move });
+        res.json({data});
     } catch (error) {
         console.error("Error fetching computer move:", error);
         res.status(500).json({ error: 'Internal Server Error' });
