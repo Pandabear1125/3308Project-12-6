@@ -1,4 +1,40 @@
-<link href="../../css/variousRules.css" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      background-color: darkgrey;
+    }
+    .sidenav:nth-child(1) {
+      background-color: grey;
+      height: 94vh;
+      border: 6px dotted lightgrey;
+    }
+    #profile-button {
+      background-color: lightgrey;
+      padding: 6px 14px;
+      border-radius: 8px;
+    }
+    #submit-button {
+      background-color: lightgrey;
+      padding: 6px 14px;
+      border-radius: 8px;
+    }
+    .sidenav:nth-child(2) {
+      background-color: darkgrey;
+      height: 100%;
+    }
+    .accordion-body {
+      background-color: lightgrey;
+      border: 2px solid black;
+    }
+  </style>
+</head>
+<body>
+  <link href="../../css/variousRules.css" rel="stylesheet">
 <div class="container-fluid text-center"> 
     <div class="row content">     
             {{!-- TODO: 
@@ -8,20 +44,25 @@
                     <img loading="lazy" alt="There was an error in displaying your profile picture" src={{pic}}  width="150" height="150" class="img-circle"/> <!--TODO: set JS index to do the SQL query --> 
                     <h2>{{name}}</h2>
                     <p>{{bio}}</p>
-                    <input type="button" onclick="showProfileForm()" value="Update Profile">
+                    <input type="button" onclick="showProfileForm()" value="Update Profile" id="profile-button">
                </div>
+               <br>
                <div class="change-form-div" id="profile-form-container">
                   <form action="/profile" method=POST class="change-form">
                     <div class="picture">
                       <label for="userPicture">Enter a link to your profile picture: </label>
+                      <br>
                       <input type="text" name="userPicture" id="userPicture" value={{pic}} required />
                     </div>
+                    <br>
                     <div class="bio">
                       <label for="userBio">Enter your biography: </label>
+                      <br>
                       <input type="text" name="userBio" id="userBio" value='{{bio}}' required /> 
                     </div>
+                    <br>
                     <div class="update-button">
-                      <button type="submit">update</button>
+                      <button type="submit" id="submit-button">update</button>
                     </div>
                   </form>
                </div>
@@ -76,8 +117,8 @@
                         <tbody>
                             <tr>
                             <td>Game1</td>
-                            <td>Game1</td>
                             <td>Game2</td>
+                            <td>Game3</td>
                             </tr>
                             <tr>
                             <td>Game4</td>
@@ -126,3 +167,5 @@
       };
     }
  </script>
+</body>
+</html>
