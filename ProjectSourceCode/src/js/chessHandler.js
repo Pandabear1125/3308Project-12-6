@@ -236,6 +236,7 @@ function parseMove(moveString) {
     const destination = moveString.slice(2, 4);
 
     return [source, destination];
+    
 }
 
 
