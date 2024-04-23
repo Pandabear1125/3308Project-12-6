@@ -234,7 +234,6 @@ function parseMove(moveString) {
 
     const source = moveString.slice(0, 2);
     const destination = moveString.slice(2, 4);
-
     return [source, destination];
 }
 
@@ -257,13 +256,16 @@ async function handleComputerMove() {
         //     window.location.href = '/game?game-type=standard&play-type=player';
         // });
 
-        const response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`);
+        let response = await fetch(`http://localhost:3000/aiResponse?fen=${encodeURIComponent(fen)}`);
 
-        const data = await response.json();
-        const aiMove = data.move;
+        let json = await response.json();
+        let move = json.data.moves[0];
+        let aiMove = move.uci;
     
         // example: should be d7d5
-        console.log('AI Move:', aiMove); 
+        console.log('Response:', json); 
+        console.log('Response:', move); 
+        console.log('Move piec:', aiMove); 
 
         const [source, destination] = parseMove(aiMove);
 
@@ -564,7 +566,7 @@ function generateFEN(board) {
     // Add active color component
     fenString += ' ' + activeColor;
   
-    fenString += ' - -';
+    fenString += ' KQkq - 0 1';
   
     return fenString;
   }
