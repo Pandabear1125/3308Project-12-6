@@ -26,3 +26,21 @@ We want to create a chess-playing website where users: can play against another 
 04/01/2024 Developed Handlbars\
 03/31/2024 Migrated the website\ 
 03/29/2024 Designed the website's outlines \
+
+###  File Tree
+├── MilestoneSubmissions
+├── ProjectSourceCode
+│   ├── src
+│   │   ├── css
+│   │   ├── init_data
+│   │   ├── js
+│   │   ├── resources
+│   │   │   └── img
+│   │   │       └── svgs
+│   │   │           └── basic-set
+│   │   └── views
+│   │       ├── layouts
+│   │       ├── pages
+│   │       └── partials
+│   └── test
+└── TeamMeetingLogs
