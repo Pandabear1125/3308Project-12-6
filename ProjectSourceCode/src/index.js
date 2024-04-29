@@ -115,7 +115,7 @@ app.post('/register', async (req, res) => {
 
     // Check if the username is valid (not too long, no special characters)
     if (!username || username.length > 20 || /[!@#$%^&*()\/<>,.\{\[\}\]\|\\]/.test(username)) {
-        return res.status(400).render("pages/register", { error: true, message: "Invalid input" });
+        return res.status(400).render("pages/register", { error: true, message: "Username can not have special characters or be more than 20 characters long." });
     }
     
     const insert_query = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *;";
