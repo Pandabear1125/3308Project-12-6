@@ -28,7 +28,7 @@ We want to create a chess-playing website where users: can play against another 
 03/29/2024 Designed the website's outlines \
 
 ###  File Tree
-├── MilestoneSubmissions
+├── MilestoneSubmissions 
 ├── ProjectSourceCode
 │   │   ├── package.json
 │   ├── package-lock.json
