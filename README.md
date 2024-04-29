@@ -19,7 +19,7 @@ We want to create a chess-playing website where users: can play against another 
 
 ### Project files
 External API Plan in milestone submissions\
-Project Proposal in milestone submissions\ 
+Project Proposal in milestone submissions\
 UAT Test plan in milestone submissions\
 Release Notes in milestone submissions\
 Asure in milestone submissions\
