@@ -18,8 +18,12 @@ We want to create a chess-playing website where users: can play against another 
 5. Navigate to [localhost 3000](http://localhost:3000/) on browser
 
 ### Project files
-External API Plan in milestone submissions\
-
+External API Plan in milestone submissions \
+Project Proposal in milestone submissions \ 
+UAT Test plan in milestone submissions \
+Release Notes in milestone submissions \
+Asure in milestone submissions \
+Team meetings in TeamMeetingLogs \
 ###  File Tree
 ├── MilestoneSubmissions \
 ├── ProjectSourceCode\
